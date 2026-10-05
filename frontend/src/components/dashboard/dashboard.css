@@ -4,18 +4,18 @@
    Visual-only CSS. Zero logic changes.
    ============================================================ */
 
-/* ---- Dashboard-scoped CSS Variables ---- */
+/* ---- Dashboard-scoped CSS Variables (ColorHunt Palette) ---- */
 :root {
-  --d-em:          #10b981;
-  --d-em-glow:     rgba(16, 185, 129, 0.18);
-  --d-em-border:   rgba(16, 185, 129, 0.22);
-  --d-em-dim:      rgba(16, 185, 129, 0.07);
-  --d-vi:          #8b5cf6;
-  --d-vi-glow:     rgba(139, 92, 246, 0.14);
-  --d-vi-border:   rgba(139, 92, 246, 0.18);
-  --d-deep-bg:     #070a12;
-  --d-glass:       rgba(10, 14, 26, 0.78);
-  --d-glass2:      rgba(14, 20, 38, 0.62);
+  --d-em:          #66BB6A;
+  --d-em-glow:     rgba(102, 187, 106, 0.22);
+  --d-em-border:   rgba(165, 214, 167, 0.35);
+  --d-em-dim:      rgba(232, 245, 233, 0.12);
+  --d-vi:          #2E7D32;
+  --d-vi-glow:     rgba(46, 125, 50, 0.20);
+  --d-vi-border:   rgba(27, 94, 32, 0.35);
+  --d-deep-bg:     #08120A;
+  --d-glass:       rgba(11, 24, 14, 0.82);
+  --d-glass2:      rgba(16, 35, 20, 0.68);
   --d-ease:        cubic-bezier(.16, 1, .3, 1);
 }
 
@@ -773,20 +773,6 @@ button[class*="btn-primary"] {
    ============================================================ */
 .layout {
   position: relative;
-  display: flex;
-  min-height: calc(100vh - 5rem);
-  width: 100%;
-  background: #070a12;
-  color: #fff;
-}
-
-.content {
-  flex: 1;
-  min-width: 0;
-  overflow-y: auto;
-  position: relative;
-  z-index: 10;
-  background: #070a12;
 }
 
 .layout::before {

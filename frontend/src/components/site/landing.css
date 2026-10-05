@@ -6,22 +6,22 @@
 /* ── Fonts ─────────────────────────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-/* ── CSS Custom Properties — shared design tokens ─────────────────────── */
+/* ── CSS Custom Properties — ColorHunt palette tokens ─────────────────── */
 :root {
   /* Colour palette */
-  --c-bg:          #030712;
-  --c-surface:     rgba(9,  11, 17, 0.7);
-  --c-border:      rgba(255,255,255,0.07);
-  --c-border-hi:   rgba(255,255,255,0.12);
-  --c-text:        #f8fafc;
-  --c-muted:       #94a3b8;
-  --c-subtle:      #475569;
-  --c-em:          #10b981;   /* emerald accent */
-  --c-em-glow:     rgba(16,185,129,0.35);
-  --c-em-dim:      rgba(16,185,129,0.08);
-  --c-violet:      #8b5cf6;
-  --c-cyan:        #06b6d4;
-  --c-amber:       #f59e0b;
+  --c-bg:          #08120A;
+  --c-surface:     rgba(13, 27, 16, 0.78);
+  --c-border:      rgba(165, 214, 167, 0.15);
+  --c-border-hi:   rgba(165, 214, 167, 0.35);
+  --c-text:        #FFFFFF;
+  --c-muted:       #A5D6A7;
+  --c-subtle:      #6A906E;
+  --c-em:          #66BB6A;   /* vibrant emerald accent */
+  --c-em-glow:     rgba(102, 187, 106, 0.38);
+  --c-em-dim:      rgba(102, 187, 106, 0.12);
+  --c-violet:      #2E7D32;
+  --c-cyan:        #1B5E20;
+  --c-amber:       #F59E0B;
 
   /* Spacing scale */
   --sp-1:  4px;

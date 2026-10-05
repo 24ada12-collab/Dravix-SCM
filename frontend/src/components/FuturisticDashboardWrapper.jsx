@@ -2,17 +2,18 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import {
-  Search,
-  Home,
-  Box,
-  ClipboardList,
-  Users,
-  Warehouse,
-  Truck,
-  LogOut,
-  X,
-  Laptop
-} from "lucide-react";
+  FaSearch,
+  FaHome,
+  FaBox,
+  FaClipboardList,
+  FaUsers,
+  FaWarehouse,
+  FaTruck,
+  FaSignOutAlt,
+  FaTimes,
+  FaLaptop
+} from "react-icons/fa";
+import FarmerAgentModal from "./agent/FarmerAgentModal";
 
 // Global component to render the futuristic backdrop (aurora glow blobs, mesh grid,
 // noise, particles) and implement mouse cursor spotlight and Ctrl+K Command Palette.
@@ -201,39 +202,39 @@ export default function FuturisticDashboardWrapper({ children }) {
   // Command palette navigation items
   const menuItems = [
     // General
-    { label: "Go to Home / Portal", path: "/", icon: Home, category: "General" },
-    { label: "Switch to Admin Dashboard", path: "/admin", icon: Laptop, category: "Navigation (Admin)" },
-    { label: "Manage Suppliers", path: "/admin/suppliers", icon: Users, category: "Navigation (Admin)" },
-    { label: "Manage Products", path: "/admin/products", icon: Box, category: "Navigation (Admin)" },
-    { label: "Manage Warehouse Managers", path: "/admin/managers", icon: Users, category: "Navigation (Admin)" },
-    { label: "View Admin Reports", path: "/admin/reports", icon: ClipboardList, category: "Navigation (Admin)" },
+    { label: "Go to Home / Portal", path: "/", icon: FaHome, category: "General" },
+    { label: "Switch to Admin Dashboard", path: "/admin", icon: FaLaptop, category: "Navigation (Admin)" },
+    { label: "Manage Suppliers", path: "/admin/suppliers", icon: FaUsers, category: "Navigation (Admin)" },
+    { label: "Manage Products", path: "/admin/products", icon: FaBox, category: "Navigation (Admin)" },
+    { label: "Manage Warehouse Managers", path: "/admin/managers", icon: FaUsers, category: "Navigation (Admin)" },
+    { label: "View Admin Reports", path: "/admin/reports", icon: FaClipboardList, category: "Navigation (Admin)" },
 
     // Customer
-    { label: "Go to Customer Dashboard", path: "/customer", icon: Home, category: "Navigation (Customer)" },
-    { label: "Browse Catalog", path: "/customer/products", icon: Box, category: "Navigation (Customer)" },
-    { label: "My Orders", path: "/customer/orders", icon: ClipboardList, category: "Navigation (Customer)" },
-    { label: "Shopping Cart", path: "/customer/cart", icon: ClipboardList, category: "Navigation (Customer)" },
-    { label: "My Wishlist", path: "/customer/wishlist", icon: ClipboardList, category: "Navigation (Customer)" },
+    { label: "Go to Customer Dashboard", path: "/customer", icon: FaHome, category: "Navigation (Customer)" },
+    { label: "Browse Catalog", path: "/customer/products", icon: FaBox, category: "Navigation (Customer)" },
+    { label: "My Orders", path: "/customer/orders", icon: FaClipboardList, category: "Navigation (Customer)" },
+    { label: "Shopping Cart", path: "/customer/cart", icon: FaClipboardList, category: "Navigation (Customer)" },
+    { label: "My Wishlist", path: "/customer/wishlist", icon: FaClipboardList, category: "Navigation (Customer)" },
 
-    // Supplier / Farmer
-    { label: "Go to Farmer Dashboard", path: "/farmer/dashboard", icon: Home, category: "Navigation (Farmer)" },
-    { label: "Add New Product", path: "/farmer/add-product", icon: Box, category: "Navigation (Farmer)" },
-    { label: "My Product Catalog", path: "/farmer/my-products", icon: Box, category: "Navigation (Farmer)" },
-    { label: "AI Market Price Forecasting", path: "/market-forecast", icon: Laptop, category: "Navigation (Farmer)" },
-    { label: "Mandi Price Explorer", path: "/market-price-explorer", icon: Laptop, category: "Navigation (Farmer)" },
+    // Supplier
+    { label: "Go to Supplier Dashboard", path: "/supplier", icon: FaHome, category: "Navigation (Supplier)" },
+    { label: "Add New Product", path: "/supplier/add-product", icon: FaBox, category: "Navigation (Supplier)" },
+    { label: "My Product Catalog", path: "/supplier/products", icon: FaBox, category: "Navigation (Supplier)" },
+    { label: "AI Market Price Forecasting", path: "/supplier/forecast", icon: FaLaptop, category: "Navigation (Supplier)" },
+    { label: "Mandi Price Explorer", path: "/supplier/price-explorer", icon: FaLaptop, category: "Navigation (Supplier)" },
 
 
     // Warehouse
-    { label: "Go to Warehouse Dashboard", path: "/warehouse", icon: Warehouse, category: "Navigation (Warehouse)" },
-    { label: "Inventory Stock Levels", path: "/warehouse/inventory", icon: Warehouse, category: "Navigation (Warehouse)" },
-    { label: "Capacity & Stock Rules", path: "/warehouse/stock", icon: Warehouse, category: "Navigation (Warehouse)" },
-    { label: "Manage Warehouse Orders", path: "/warehouse/orders", icon: ClipboardList, category: "Navigation (Warehouse)" },
+    { label: "Go to Warehouse Dashboard", path: "/warehouse", icon: FaWarehouse, category: "Navigation (Warehouse)" },
+    { label: "Inventory Stock Levels", path: "/warehouse/inventory", icon: FaWarehouse, category: "Navigation (Warehouse)" },
+    { label: "Capacity & Stock Rules", path: "/warehouse/stock", icon: FaWarehouse, category: "Navigation (Warehouse)" },
+    { label: "Manage Warehouse Orders", path: "/warehouse/orders", icon: FaClipboardList, category: "Navigation (Warehouse)" },
 
     // Logistics
-    { label: "Go to Logistics Dashboard", path: "/logistics", icon: Truck, category: "Navigation (Logistics)" },
-    { label: "Assigned Deliveries", path: "/logistics/deliveries", icon: Truck, category: "Navigation (Logistics)" },
-    { label: "Shipment Node Tracking", path: "/logistics/tracking", icon: Truck, category: "Navigation (Logistics)" },
-    { label: "Logistics History", path: "/logistics/history", icon: ClipboardList, category: "Navigation (Logistics)" }
+    { label: "Go to Logistics Dashboard", path: "/logistics", icon: FaTruck, category: "Navigation (Logistics)" },
+    { label: "Assigned Deliveries", path: "/logistics/deliveries", icon: FaTruck, category: "Navigation (Logistics)" },
+    { label: "Shipment Node Tracking", path: "/logistics/tracking", icon: FaTruck, category: "Navigation (Logistics)" },
+    { label: "Logistics History", path: "/logistics/history", icon: FaClipboardList, category: "Navigation (Logistics)" }
   ];
 
   const filteredItems = menuItems.filter(item =>
@@ -304,7 +305,7 @@ export default function FuturisticDashboardWrapper({ children }) {
             >
               {/* Header Input */}
               <div className="palette-header">
-                <Search className="palette-search-icon" />
+                <FaSearch className="palette-search-icon" />
                 <input
                   ref={paletteInputRef}
                   type="text"
@@ -313,7 +314,7 @@ export default function FuturisticDashboardWrapper({ children }) {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <button className="palette-close-btn" onClick={() => setShowPalette(false)}>
-                  <X />
+                  <FaTimes />
                 </button>
               </div>
 
@@ -387,6 +388,8 @@ export default function FuturisticDashboardWrapper({ children }) {
         <span>⌘ K</span>
       </div>
 
+      {/* 7. Single Unified DRAVIX Farmer Agent */}
+      <FarmerAgentModal />
     </div>
   );
 }
