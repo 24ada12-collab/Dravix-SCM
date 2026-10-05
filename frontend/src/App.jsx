@@ -17,6 +17,14 @@ import DemandForecastPage from './pages/DemandForecastPage';
 import RolePlaceholderDashboard from './pages/RolePlaceholderDashboard';
 import WarehouseListingPage from './pages/WarehouseListingPage';
 import WarehouseDetailsPage from './pages/WarehouseDetailsPage';
+import WarehouseDashboard from './pages/warehouse/WarehouseDashboard';
+import Inventory from './pages/warehouse/Inventory';
+import StockManagement from './pages/warehouse/StockManagement';
+import WarehouseClaims from './pages/warehouse/WarehouseClaims';
+import PendingProducts from './pages/warehouse/PendingProducts';
+import WarehouseDispatch from './pages/warehouse/WarehouseDispatch';
+import WarehouseRevenue from './pages/warehouse/WarehouseRevenue';
+import WarehousePartnerships from './pages/warehouse/WarehousePartnerships';
 import FarmerDashboard from './pages/FarmerDashboard';
 import FarmerAddProductPage from './pages/FarmerAddProductPage';
 import MyProductsPage from './pages/MyProductsPage';
@@ -34,6 +42,16 @@ function App() {
           {/* Warehouses Discovery */}
           <Route path="/warehouses" element={<WarehouseListingPage />} />
           <Route path="/warehouses/:id" element={<WarehouseDetailsPage />} />
+
+          {/* Warehouse Manager Portal & Modules */}
+          <Route path="/warehouse" element={<WarehouseDashboard />} />
+          <Route path="/warehouse/inventory" element={<Inventory />} />
+          <Route path="/warehouse/stock" element={<StockManagement />} />
+          <Route path="/warehouse/claims" element={<WarehouseClaims />} />
+          <Route path="/warehouse/pending-products" element={<PendingProducts />} />
+          <Route path="/warehouse/dispatch" element={<WarehouseDispatch />} />
+          <Route path="/warehouse/revenue" element={<WarehouseRevenue />} />
+          <Route path="/warehouse/partnerships" element={<WarehousePartnerships />} />
 
           {/* Authentication */}
           <Route path="/login" element={<LoginPage />} />

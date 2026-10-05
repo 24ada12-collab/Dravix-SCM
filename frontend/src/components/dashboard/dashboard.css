@@ -776,6 +776,8 @@ button[class*="btn-primary"] {
   display: flex;
   min-height: calc(100vh - 5rem);
   width: 100%;
+  background: #070a12;
+  color: #fff;
 }
 
 .content {
@@ -784,6 +786,7 @@ button[class*="btn-primary"] {
   overflow-y: auto;
   position: relative;
   z-index: 10;
+  background: #070a12;
 }
 
 .layout::before {

@@ -1,0 +1,451 @@
+/* ============================================================
+   Dravix SCM — Warehouse Module Premium Theme
+   Palette: https://colorhunt.co/palette/e8f5e9a5d6a766bb6a1b5e20
+   #E8F5E9 (Very soft pastel green / surface / wash)
+   #A5D6A7 (Soft sage green / subtle borders / badges)
+   #66BB6A (Vibrant emerald mint / interactive accents)
+   #1B5E20 (Deep forest agro-green / primary text / headers)
+   ============================================================ */
+
+:root {
+  /* ColorHunt Palette 4-tone tokens */
+  --wh-p-light: #E8F5E9;
+  --wh-p-soft:  #A5D6A7;
+  --wh-p-mid:   #66BB6A;
+  --wh-p-dark:  #1B5E20;
+
+  /* Harmonized UI variables */
+  --wh-bg: #F5FAF6;
+  --wh-card-bg: #FFFFFF;
+  --wh-card-border: rgba(165, 214, 167, 0.45);
+  --wh-glass-bg: rgba(255, 255, 255, 0.88);
+  --wh-glass-border: rgba(165, 214, 167, 0.35);
+
+  --wh-text-dark: #1B5E20;
+  --wh-text-mid: #2E7D32;
+  --wh-text-sub: #4A6B50;
+  --wh-text-mute: #6C8E72;
+
+  --wh-capacity-track: #E8F5E9;
+  --wh-capacity-ok: linear-gradient(90deg, #66BB6A, #43A047);
+  --wh-capacity-warn: linear-gradient(90deg, #F59E0B, #D97706);
+  --wh-capacity-critical: linear-gradient(90deg, #EF4444, #DC2626);
+
+  --brand-500: #1B5E20;
+  --brand-400: #66BB6A;
+  --brand-100: #E8F5E9;
+  --brand-grad: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+  --shadow-sm: 0 1px 3px rgba(27, 94, 32, 0.06);
+  --shadow-md: 0 4px 14px rgba(27, 94, 32, 0.08);
+  --shadow-lg: 0 10px 28px rgba(27, 94, 32, 0.12);
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+}
+
+/* ============================ Warehouse shell ============================ */
+.wh-shell {
+  background: var(--wh-bg);
+  min-height: calc(100vh - 5rem);
+  color: var(--wh-text-dark);
+  padding-bottom: 40px;
+}
+
+.wh-page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(165, 214, 167, 0.35);
+}
+
+.wh-page-head .eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--wh-text-dark);
+  background: var(--wh-p-light);
+  border: 1px solid var(--wh-p-soft);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+.wh-page-head h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 850;
+  color: var(--wh-text-dark);
+  letter-spacing: -0.02em;
+}
+
+.wh-page-head p {
+  color: var(--wh-text-sub);
+  font-size: 13.5px;
+  margin-top: 4px;
+}
+
+.wh-page-head-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* ============================ Glass KPI cards ============================ */
+.wh-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.wh-kpi-card {
+  position: relative;
+  background: var(--wh-card-bg);
+  border: 1px solid var(--wh-card-border);
+  border-radius: var(--r-lg);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform .22s var(--ease), box-shadow .22s var(--ease), border-color .22s var(--ease);
+}
+
+.wh-kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--wh-p-mid);
+}
+
+.wh-kpi-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.wh-kpi-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--wh-text-mute);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.wh-kpi-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  background: var(--wh-p-light);
+  color: var(--wh-text-dark);
+  border: 1px solid rgba(165, 214, 167, 0.4);
+}
+
+.wh-kpi-value {
+  font-size: 32px;
+  font-weight: 850;
+  color: var(--wh-text-dark);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.wh-kpi-sub {
+  font-size: 12.5px;
+  color: var(--wh-text-sub);
+}
+
+/* ============================ Capacity Bars ============================ */
+.wh-capacity-card {
+  background: var(--wh-card-bg);
+  border: 1px solid var(--wh-card-border);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.wh-capacity-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.wh-capacity-top h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--wh-text-dark);
+  margin: 0;
+}
+
+.wh-capacity-pct {
+  font-size: 20px;
+  font-weight: 850;
+  color: var(--wh-text-dark);
+}
+
+.wh-capacity-track {
+  width: 100%;
+  height: 12px;
+  background: var(--wh-capacity-track);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.wh-capacity-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s var(--ease);
+}
+
+.wh-capacity-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--wh-text-sub);
+}
+
+.wh-capacity-meta strong {
+  color: var(--wh-text-dark);
+  font-weight: 750;
+}
+
+.wh-capacity-edit-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-top: 18px !important;
+  padding-top: 14px;
+  border-top: 1px solid rgba(165, 214, 167, 0.3);
+}
+
+.wh-capacity-edit-row label {
+  font-size: 12px !important;
+  color: var(--wh-text-dark) !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+}
+
+.wh-capacity-edit-row input {
+  flex: 1 !important;
+  padding: 9px 14px !important;
+  border: 1px solid var(--wh-p-soft) !important;
+  border-radius: var(--r-sm) !important;
+  font-size: 13.5px !important;
+  background: #FFFFFF !important;
+  color: var(--wh-text-dark) !important;
+  outline: none !important;
+}
+
+.wh-capacity-edit-row input:focus {
+  border-color: var(--wh-p-mid) !important;
+  box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.25) !important;
+}
+
+.wh-capacity-edit-row button {
+  background: var(--wh-p-dark) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  padding: 9px 18px !important;
+  border-radius: var(--r-sm) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.wh-capacity-edit-row button:hover {
+  background: var(--wh-text-mid) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ============================ Data Tables ============================ */
+.wh-table-card {
+  background: var(--wh-card-bg);
+  border: 1px solid var(--wh-card-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-top: 24px;
+}
+
+.wh-table-card header, .wh-table-card .wh-card-head {
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(165, 214, 167, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wh-table-card h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--wh-text-dark);
+}
+
+.wh-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13.5px;
+}
+
+.wh-table th {
+  background: var(--wh-p-light);
+  color: var(--wh-text-dark);
+  font-weight: 750;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--wh-p-soft);
+}
+
+.wh-table td {
+  padding: 14px 20px;
+  color: #1A301E;
+  border-bottom: 1px solid rgba(165, 214, 167, 0.25);
+  vertical-align: middle;
+}
+
+.wh-table tr:hover td {
+  background: rgba(232, 245, 233, 0.45);
+}
+
+.wh-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Badges */
+.wh-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .03em;
+}
+
+.wh-badge.success, .wh-badge.active, .wh-badge.approved {
+  background: #E8F5E9;
+  color: #1B5E20;
+  border: 1px solid #A5D6A7;
+}
+
+.wh-badge.warning, .wh-badge.pending {
+  background: #FFFBEB;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+
+.wh-badge.danger, .wh-badge.rejected {
+  background: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+}
+
+.wh-badge.info, .wh-badge.processing {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+}
+
+/* ============================ Buttons & Forms ============================ */
+.wh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .18s var(--ease);
+  text-decoration: none;
+}
+
+.wh-btn-primary {
+  background: var(--wh-p-dark);
+  color: #FFFFFF;
+  border: 1px solid transparent;
+}
+.wh-btn-primary:hover {
+  background: var(--wh-text-mid);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.wh-btn-secondary {
+  background: var(--wh-p-light);
+  color: var(--wh-text-dark);
+  border: 1px solid var(--wh-p-soft);
+}
+.wh-btn-secondary:hover {
+  background: #D8ECD9;
+  border-color: var(--wh-p-mid);
+}
+
+.wh-btn-danger {
+  background: #FEE2E2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+}
+.wh-btn-danger:hover {
+  background: #FCA5A5;
+}
+
+.wh-input, .wh-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--wh-p-soft);
+  border-radius: var(--r-sm);
+  background: #FFFFFF;
+  color: var(--wh-text-dark);
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color .15s ease;
+}
+
+.wh-input:focus, .wh-select:focus {
+  border-color: var(--wh-p-mid);
+  box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.25);
+}
+
+/* ============================ Grid Layouts ============================ */
+.wh-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.wh-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .wh-page-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .wh-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}

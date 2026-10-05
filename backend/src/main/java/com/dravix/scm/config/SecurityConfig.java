@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/warehouses/**").permitAll()
                         .requestMatchers("/api/verification/admin/**").permitAll()
+                        .requestMatchers("/api/forecast/**").permitAll()
                         // Secured endpoints will check roles / verification status
                         .requestMatchers("/api/products/gate-check").authenticated()
                         .requestMatchers("/api/verification/**").authenticated()
