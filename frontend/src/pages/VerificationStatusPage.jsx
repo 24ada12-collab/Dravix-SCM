@@ -139,48 +139,48 @@ const VerificationStatusPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#E8F5E9] flex flex-col font-sans">
+    <div className="min-h-screen subtle-mesh flex flex-col font-sans">
       <Navbar />
 
-      <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-6">
+      <main className="flex-1 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-6">
         {/* Verification Status Header Banner */}
-        <div className="bg-white rounded-2xl border border-[#A5D6A7] p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <div className="bg-white/95 backdrop-blur-md rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                Account Identity & Regulatory Verification
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                Identity & Regulatory Compliance
               </span>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-gray-100 text-gray-700">
-                Role: {isFpo ? 'FPO MEMBER' : 'FARMER'}
+              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60">
+                {isFpo ? 'FPO Member' : 'Agricultural Producer'}
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1B5E20] tracking-tight">
-              Farmer Verification Center
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Producer Verification Center
             </h1>
-            <p className="text-sm text-gray-600 mt-1">
-              Account: <strong>{user?.name || 'Producer'}</strong> ({user?.email})
+            <p className="text-sm text-slate-500 mt-1">
+              Account: <strong className="text-slate-800 font-semibold">{user?.name || 'Producer'}</strong> ({user?.email})
             </p>
           </div>
 
           {/* Current Status Badge */}
           <div className="flex flex-col items-start sm:items-end gap-2 shrink-0">
             {verificationStatus === 'VERIFIED' ? (
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-green-100 text-[#1B5E20] font-bold text-sm border-2 border-[#66BB6A] shadow-xs">
-                <CheckCircle2 className="w-5 h-5 text-[#1B5E20]" /> 🟢 Verified
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-emerald-50 text-emerald-800 font-bold text-sm border border-emerald-300 shadow-xs">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Account Verified
               </span>
             ) : verificationStatus === 'REJECTED' ? (
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-100 text-red-800 font-bold text-sm border-2 border-red-300 shadow-xs">
-                <XCircle className="w-5 h-5 text-red-600" /> 🔴 Verification Rejected
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-rose-50 text-rose-800 font-bold text-sm border border-rose-300 shadow-xs">
+                <XCircle className="w-4 h-4 text-rose-600" /> Verification Rejected
               </span>
             ) : (
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-100 text-amber-900 font-bold text-sm border-2 border-amber-300 shadow-xs">
-                <Clock className="w-5 h-5 text-amber-600" /> 🟡 Verification Pending
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-amber-50 text-amber-800 font-bold text-sm border border-amber-300 shadow-xs">
+                <Clock className="w-4 h-4 text-amber-600" /> Verification Pending
               </span>
             )}
             <button
               onClick={fetchStatus}
-              className="text-xs text-[#1B5E20] hover:underline flex items-center gap-1 cursor-pointer font-medium"
+              className="text-xs text-emerald-700 hover:text-emerald-800 flex items-center gap-1.5 cursor-pointer font-semibold transition-colors"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh Status
             </button>
@@ -188,48 +188,55 @@ const VerificationStatusPage = () => {
         </div>
 
         {uploadSuccess && (
-          <div className="p-4 bg-green-50 border border-green-300 rounded-xl text-xs text-green-900 font-medium flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-green-700 shrink-0" />
+          <div className="p-4 bg-emerald-50 border border-emerald-300 rounded-2xl text-xs text-emerald-900 font-medium flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
             <span>{uploadSuccess}</span>
           </div>
         )}
 
         {/* Feature Access Comparison Banner */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Available Features */}
-          <div className="bg-white rounded-2xl p-5 border border-[#A5D6A7] shadow-xs">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#1B5E20] mb-3">
-              <CheckCircle2 className="w-4 h-4 text-[#66BB6A]" /> Unrestricted Available Modules
-            </div>
-            <div className="space-y-2 text-xs text-gray-700">
-              <div className="p-2.5 rounded-lg bg-[#E8F5E9]/50 border border-[#A5D6A7]/50 flex items-center justify-between">
-                <span className="font-semibold text-[#1B5E20]">Market Forecast Insights</span>
-                <Link to="/market-forecast" className="text-xs text-[#1B5E20] font-bold hover:underline">
-                  View →
-                </Link>
+          <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800 mb-3">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Unrestricted Access
               </div>
-              <div className="p-2.5 rounded-lg bg-[#E8F5E9]/50 border border-[#A5D6A7]/50 flex items-center justify-between">
-                <span className="font-semibold text-[#1B5E20]">Demand Forecast Projections</span>
-                <Link to="/demand-forecast" className="text-xs text-[#1B5E20] font-bold hover:underline">
-                  View →
-                </Link>
-              </div>
-              <div className="p-2.5 rounded-lg bg-[#E8F5E9]/50 border border-[#A5D6A7]/50 flex items-center justify-between">
-                <span className="font-semibold text-[#1B5E20]">Basic Profile & Map Location</span>
-                <span className="text-[11px] text-[#66BB6A] font-bold">Active ✓</span>
+              <p className="text-xs text-slate-500 mb-4">
+                Available to all registered producers without identity document gating:
+              </p>
+              <div className="space-y-2 text-xs">
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between hover:bg-emerald-50/40 transition-colors">
+                  <span className="font-semibold text-slate-800">Market Price Forecast Insights</span>
+                  <Link to="/market-forecast" className="text-xs text-emerald-700 font-bold hover:underline flex items-center gap-1">
+                    Explore <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between hover:bg-emerald-50/40 transition-colors">
+                  <span className="font-semibold text-slate-800">Demand Forecast Projections</span>
+                  <Link to="/demand-forecast" className="text-xs text-emerald-700 font-bold hover:underline flex items-center gap-1">
+                    Explore <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                  <span className="font-semibold text-slate-800">Basic Profile & GPS Coordinates</span>
+                  <span className="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">Active</span>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Restricted Gated Actions */}
-          <div className="bg-white rounded-2xl p-5 border border-amber-300 shadow-xs">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-800 mb-3">
-              <AlertTriangle className="w-4 h-4 text-amber-600" /> Verification-Gated Modules
+          <div className="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-sm flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-800 mb-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600" /> Verification-Gated Modules
+              </div>
+              <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+                National agricultural trade regulations require verified land title or FPO membership before onboarding produce.
+              </p>
             </div>
-            <p className="text-xs text-gray-600 mb-3">
-              Regulatory compliance requires verified identity before adding or storing agricultural commodities.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
               <Button
                 variant={verificationStatus === 'VERIFIED' ? 'primary' : 'outlineLight'}
                 size="sm"
@@ -254,13 +261,13 @@ const VerificationStatusPage = () => {
         </div>
 
         {/* Verification Document Upload Section */}
-        <div className="bg-white rounded-2xl border border-[#A5D6A7] p-6 sm:p-8 shadow-sm space-y-6">
+        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm space-y-6">
           <div>
-            <h2 className="text-lg font-bold text-[#1B5E20] flex items-center gap-2">
-              <FileText className="w-5 h-5 text-[#66BB6A]" /> Required Verification Documents
+            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-emerald-600" /> Regulatory Documentation
             </h2>
-            <p className="text-xs text-gray-600 mt-1">
-              Please upload clear copies (PDF, JPG, JPEG, PNG, max 10MB). Documents are reviewed by administrators before full platform access is enabled.
+            <p className="text-xs text-slate-500 mt-1">
+              Upload scanned copies (PDF, JPG, PNG, up to 10MB). Approved records unlock full marketplace selling privileges.
             </p>
           </div>
 
@@ -273,36 +280,36 @@ const VerificationStatusPage = () => {
               return (
                 <div
                   key={doc.type}
-                  className="p-5 rounded-2xl border border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                  className="p-5 rounded-2xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <h4 className="text-sm font-bold text-[#1B5E20]">{doc.label}</h4>
+                      <h4 className="text-sm font-bold text-slate-900">{doc.label}</h4>
                       {status === 'VERIFIED' && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-800">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
                           Approved ✓
                         </span>
                       )}
                       {status === 'PENDING' && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
                           Under Review
                         </span>
                       )}
                       {status === 'REJECTED' && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-800">
-                          Rejected (Re-upload required)
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-300">
+                          Re-upload Required
                         </span>
                       )}
                       {status === 'NOT_UPLOADED' && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-200 text-gray-600">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">
                           Not Submitted
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-600">{doc.desc}</p>
+                    <p className="text-xs text-slate-500">{doc.desc}</p>
                     {fileName && (
-                      <p className="text-[11px] text-gray-500 font-mono">
-                        Current file: {fileName}
+                      <p className="text-[11px] text-slate-500 font-mono">
+                        Attached: {fileName}
                       </p>
                     )}
                   </div>
@@ -320,8 +327,8 @@ const VerificationStatusPage = () => {
                         }}
                         className="hidden"
                       />
-                      <span className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg bg-white border border-[#A5D6A7] text-[#1B5E20] hover:bg-[#E8F5E9] shadow-xs transition-colors">
-                        <UploadCloud className="w-4 h-4 text-[#66BB6A]" />
+                      <span className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-xs transition-colors">
+                        <UploadCloud className="w-4 h-4 text-emerald-600" />
                         {isUploading ? 'Uploading...' : status === 'NOT_UPLOADED' ? 'Upload Document' : 'Replace Document'}
                       </span>
                     </label>
@@ -333,22 +340,22 @@ const VerificationStatusPage = () => {
         </div>
 
         {/* Development Helper: Simulate Admin Approval / Rejection */}
-        <div className="p-5 rounded-2xl bg-[#E8F5E9]/80 border border-[#A5D6A7] space-y-3">
+        <div className="p-5 rounded-3xl bg-emerald-50/70 border border-emerald-200/80 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-[#1B5E20]" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B5E20]">
+              <ShieldCheck className="w-4 h-4 text-emerald-800" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-900">
                 Admin Review Simulation (Development Mode)
               </h3>
             </div>
-            <span className="text-[10px] bg-white px-2 py-0.5 rounded font-mono text-gray-600 border border-[#A5D6A7]">
+            <span className="text-[10px] bg-white px-2.5 py-0.5 rounded-full font-mono text-slate-600 border border-emerald-200">
               Buildathon Inspection Hook
             </span>
           </div>
-          <p className="text-xs text-gray-700 leading-relaxed">
+          <p className="text-xs text-slate-600 leading-relaxed">
             Test the strict verification gate live without waiting for a separate Admin dashboard session. Toggle this account's status to test both blocked and permitted flows:
           </p>
-          <div className="flex items-center gap-3 pt-1">
+          <div className="flex flex-wrap items-center gap-2.5 pt-1">
             <Button
               variant="dark"
               size="sm"
