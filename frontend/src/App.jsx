@@ -15,6 +15,7 @@ import MarketForecastPage from './pages/MarketForecastPage';
 import DemandForecastPage from './pages/DemandForecastPage';
 import RolePlaceholderDashboard from './pages/RolePlaceholderDashboard';
 import WarehouseListingPage from './pages/WarehouseListingPage';
+import WarehouseDetailsPage from './pages/WarehouseDetailsPage';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
 
           {/* Warehouses Discovery */}
           <Route path="/warehouses" element={<WarehouseListingPage />} />
+          <Route path="/warehouses/:id" element={<WarehouseDetailsPage />} />
 
           {/* Authentication */}
           <Route path="/login" element={<LoginPage />} />

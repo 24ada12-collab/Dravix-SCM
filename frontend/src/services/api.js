@@ -38,6 +38,11 @@ export const getWarehouses = async (filters = {}) => {
   return response.data;
 };
 
+export const getWarehouseById = async (id) => {
+  const response = await api.get(`/warehouses/${id}`);
+  return response.data;
+};
+
 // Auth API calls
 export const sendOtp = async (email) => {
   const response = await api.post('/auth/send-otp', { email });

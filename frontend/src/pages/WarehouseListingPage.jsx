@@ -325,7 +325,7 @@ const WarehouseListingPage = () => {
                       </div>
 
                       {/* Metrics Box */}
-                      <div className="bg-[#F4FBF5] rounded-xl border border-[#C8E6C9] p-3 space-y-2 mb-4">
+                      <div className="bg-[#F4FBF5] rounded-xl border border-[#C8E6C9] p-3 space-y-2 mb-3">
                         {/* Total Capacity */}
                         <div className="flex items-center justify-between text-xs">
                           <span className="text-gray-600">Total Capacity:</span>
@@ -363,6 +363,18 @@ const WarehouseListingPage = () => {
                             </span>
                           </div>
                         )}
+                      </div>
+
+                      {/* View Details Action */}
+                      <div className="mb-3">
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          className="w-full text-xs font-bold py-2 shadow-sm"
+                          onClick={() => navigate(`/warehouses/${wh.id}`)}
+                        >
+                          View Details
+                        </Button>
                       </div>
                     </div>
 
