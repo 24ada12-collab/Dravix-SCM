@@ -1,131 +1,157 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Warehouse, ArrowLeft, CheckCircle2, ShieldCheck, Building2, Check } from 'lucide-react';
+import {
+  Warehouse,
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  ShieldCheck,
+  Building2,
+  User,
+  Phone,
+  Scale,
+  Snowflake,
+  Shield,
+  MapPin,
+  Lock,
+} from 'lucide-react';
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import LocationPicker from '../components/LocationPicker';
+import EmailOtpVerification from '../components/EmailOtpVerification';
+import PasswordCreationInput from '../components/PasswordCreationInput';
+import { registerWarehouse } from '../services/api';
+import { useAuth } from '../services/AuthContext';
 
 const WarehouseRegistration = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const [formData, setFormData] = useState({
-    warehouseName: '',
-    organizationName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-    address: '',
-    district: '',
-    state: '',
-    pincode: '',
-    latitude: '',
-    longitude: '',
-    storageCapacityMt: '',
-    supportedCategories: ['Grains & Cereals'],
-    isWdraRegistered: false,
-    wdraRegNumber: '',
+  // Multi-step registration state:
+  // Step 1: Warehouse Details, Owner, Capacity, Cold Storage, WDRA, Map Location
+  // Step 2: Email & OTP Verification
+  // Step 3: Password Creation & Final Registration
+  const [currentStep, setCurrentStep] = useState(1);
+
+  // Form Fields - Step 1: Warehouse & Facility Details
+  const [warehouseName, setWarehouseName] = useState('');
+  const [ownerName, setOwnerName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [totalCapacityKg, setTotalCapacityKg] = useState('');
+  const [coldStorageAvailable, setColdStorageAvailable] = useState(false);
+  const [wdraRegistered, setWdraRegistered] = useState(false);
+  const [wdraRegNumber, setWdraRegNumber] = useState('');
+
+  // Map Location details
+  const [locationData, setLocationData] = useState({
+    latitude: 11.341,
+    longitude: 77.7172,
+    address: 'Near Agro-Hub, Perundurai Road',
+    district: 'Erode',
+    state: 'Tamil Nadu',
+    pincode: '638052',
   });
 
-  const [errors, setErrors] = useState({});
+  // Step 2: Email & OTP Verification
+  const [email, setEmail] = useState('');
+  const [emailVerified, setEmailVerified] = useState(false);
+
+  // Step 3: Password Creation
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+
+  // Processing state
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(null);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
-  const availableCategories = [
-    'Grains & Cereals',
-    'Pulses & Legumes',
-    'Oilseeds',
-    'Cold Storage / Perishables',
-    'Spices',
-    'Cotton & Fibers',
-  ];
-
-  const handleCategoryToggle = (category) => {
-    setFormData((prev) => {
-      const exists = prev.supportedCategories.includes(category);
-      if (exists) {
-        return { ...prev, supportedCategories: prev.supportedCategories.filter((c) => c !== category) };
-      } else {
-        return { ...prev, supportedCategories: [...prev.supportedCategories, category] };
-      }
-    });
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
-    }
-  };
-
-  const validate = () => {
-    const newErrors = {};
-
-    if (!formData.warehouseName.trim()) newErrors.warehouseName = 'Warehouse name is required';
-    if (!formData.organizationName.trim()) newErrors.organizationName = 'Operating organization name is required';
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email address is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = 'Phone number is required';
-    } else if (!/^[0-9]{10}$/.test(formData.phone.replace(/\D/g, ''))) {
-      newErrors.phone = 'Enter a valid 10-digit phone number';
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters long';
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    if (!formData.address.trim()) newErrors.address = 'Warehouse physical address is required';
-    if (!formData.district.trim()) newErrors.district = 'District is required';
-    if (!formData.state.trim()) newErrors.state = 'State is required';
-
-    if (!formData.pincode.trim()) {
-      newErrors.pincode = 'Pincode is required';
-    } else if (!/^[0-9]{6}$/.test(formData.pincode.trim())) {
-      newErrors.pincode = 'Enter a valid 6-digit postal code';
-    }
-
-    if (!formData.storageCapacityMt || Number(formData.storageCapacityMt) <= 0) {
-      newErrors.storageCapacityMt = 'Valid storage capacity (in Metric Tonnes) is required';
-    }
-
-    if (formData.supportedCategories.length === 0) {
-      newErrors.supportedCategories = 'Select at least one supported agricultural category';
-    }
-
-    if (formData.isWdraRegistered && !formData.wdraRegNumber.trim()) {
-      newErrors.wdraRegNumber = 'WDRA Registration Number is required when WDRA flag is checked';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
+  // Step 1 Validation & Proceed
+  const handleStep1Submit = (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!warehouseName.trim()) {
+      setError('Please provide the Warehouse / Godown Name.');
+      return;
+    }
+    if (!ownerName.trim()) {
+      setError('Please provide the Owner / Facility Manager Name.');
+      return;
+    }
+    if (!phone.trim() || phone.replace(/\D/g, '').length !== 10) {
+      setError('Please provide a valid 10-digit mobile number.');
+      return;
+    }
+    if (!totalCapacityKg || Number(totalCapacityKg) <= 0) {
+      setError('Please enter a valid total storage capacity greater than 0.');
+      return;
+    }
+    if (wdraRegistered && !wdraRegNumber.trim()) {
+      setError('Please provide your WDRA Registration Number.');
+      return;
+    }
+    if (!locationData.latitude || !locationData.longitude) {
+      setError('Please confirm the facility location on the interactive map.');
+      return;
+    }
 
+    setError(null);
+    setCurrentStep(2);
+  };
+
+  // Step 2 Validation & Proceed
+  const handleStep2Submit = () => {
+    if (!emailVerified) {
+      setError('Please verify your email address via the OTP before proceeding.');
+      return;
+    }
+    setError(null);
+    setCurrentStep(3);
+  };
+
+  // Step 3 Final Registration
+  const handleFinalSubmit = async (e) => {
+    e.preventDefault();
+    if (!isPasswordValid) {
+      setError('Please satisfy all password security requirements.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    setError(null);
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      const payload = {
+        warehouseName: warehouseName.trim(),
+        ownerName: ownerName.trim(),
+        phone: phone.trim(),
+        totalCapacityKg: parseFloat(totalCapacityKg),
+        coldStorageAvailable,
+        wdraRegistered,
+        wdraRegNumber: wdraRegistered ? wdraRegNumber.trim() : null,
+        latitude: locationData.latitude,
+        longitude: locationData.longitude,
+        address: locationData.address,
+        district: locationData.district,
+        state: locationData.state,
+        pincode: locationData.pincode,
+        email: email.trim().toLowerCase(),
+        password,
+      };
+
+      const response = await registerWarehouse(payload);
+      login(response);
+      setRegistrationSuccess(true);
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Warehouse registration failed.');
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-    }, 1000);
+    }
   };
 
   return (
@@ -133,25 +159,58 @@ const WarehouseRegistration = () => {
       <Navbar />
 
       <main className="flex-1 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
-        <button
-          onClick={() => navigate('/register')}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1B5E20] hover:underline mb-6 cursor-pointer"
-        >
-          <ArrowLeft className="w-4 h-4" /> Change Role
-        </button>
+        {/* Navigation / Step indicator */}
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={() => {
+              if (currentStep > 1) {
+                setCurrentStep(currentStep - 1);
+                setError(null);
+              } else {
+                navigate('/register');
+              }
+            }}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1B5E20] hover:underline cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />{' '}
+            {currentStep === 1 ? 'Back to Role Select' : 'Previous Step'}
+          </button>
 
+          {/* Stepper Dots */}
+          <div className="flex items-center gap-2">
+            {[1, 2, 3].map((step) => (
+              <div
+                key={step}
+                className={`flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold transition-all ${
+                  currentStep === step
+                    ? 'bg-[#1B5E20] text-white shadow-sm ring-2 ring-[#66BB6A]'
+                    : currentStep > step
+                    ? 'bg-[#66BB6A] text-white'
+                    : 'bg-white text-gray-400 border border-[#A5D6A7]'
+                }`}
+              >
+                {currentStep > step ? '✓' : step}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Card Container */}
         <div className="bg-white rounded-2xl border border-[#A5D6A7] shadow-lg overflow-hidden">
           {/* Header */}
           <div className="bg-[#1B5E20] text-white p-6 sm:p-8 flex items-center justify-between">
             <div>
               <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/10 text-[#A5D6A7] text-xs font-semibold uppercase tracking-wider mb-2">
-                <Warehouse className="w-3.5 h-3.5" /> Storage Facility
+                <Warehouse className="w-3.5 h-3.5" /> Storage Facility Registration
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                Warehouse Manager Registration
+                Register Warehouse
               </h1>
               <p className="text-xs sm:text-sm text-[#A5D6A7] mt-1">
-                Register storage capacity, chamber specifications, and WDRA compliance details.
+                Step {currentStep} of 3:{' '}
+                {currentStep === 1 && 'Facility Profile, Capacity & Geo-Location'}
+                {currentStep === 2 && 'Email OTP Verification'}
+                {currentStep === 3 && 'Secure Password & Account Creation'}
               </p>
             </div>
             <div className="hidden sm:flex w-14 h-14 rounded-2xl bg-[#66BB6A] text-white items-center justify-center shrink-0">
@@ -159,276 +218,306 @@ const WarehouseRegistration = () => {
             </div>
           </div>
 
-          {submitted ? (
-            <div className="p-8 sm:p-12 text-center space-y-5">
+          {/* Error Banner */}
+          {error && (
+            <div className="m-6 p-4 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-red-500" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Registration Success View */}
+          {registrationSuccess ? (
+            <div className="p-8 sm:p-12 text-center space-y-5 animate-fadeIn">
               <div className="w-16 h-16 rounded-full bg-[#E8F5E9] text-[#1B5E20] flex items-center justify-center mx-auto border-2 border-[#66BB6A]">
                 <CheckCircle2 className="w-9 h-9" />
               </div>
               <h2 className="text-2xl font-bold text-[#1B5E20]">
                 Warehouse Registered Successfully!
               </h2>
-              <p className="text-sm text-gray-600 max-w-md mx-auto">
-                Facility <strong>{formData.warehouseName}</strong> has been configured with {formData.storageCapacityMt} MT capacity in the local staging registry.
+              <p className="text-sm text-gray-600 max-w-md mx-auto leading-relaxed">
+                Facility <strong>{warehouseName}</strong> has been enrolled under{' '}
+                <strong>{ownerName}</strong> with {Number(totalCapacityKg).toLocaleString()} kg total capacity.
               </p>
-              <div className="p-4 rounded-xl bg-[#E8F5E9] border border-[#A5D6A7] text-xs text-[#1B5E20] font-medium max-w-md mx-auto">
-                Status: {formData.isWdraRegistered ? 'WDRA Verification Pending (e-NWR candidate)' : 'Standard Agro-Storage Facility'}. Full credentials hook up in Stage 3.
+              <div className="p-4 rounded-xl bg-[#E8F5E9] border border-[#A5D6A7] text-xs text-[#1B5E20] font-medium max-w-md mx-auto space-y-1">
+                <div>Account Role: <strong>Warehouse Manager</strong></div>
+                <div>Status: <strong>Pending Administrative Review & Verification</strong></div>
+                {wdraRegistered && (
+                  <div className="text-[11px] text-[#2E7D32]">WDRA Accreditation tagged for e-NWR eligibility</div>
+                )}
               </div>
               <div className="pt-4 flex justify-center gap-3">
-                <Button variant="dark" onClick={() => navigate('/')}>
-                  Return to Home
+                <Button variant="dark" onClick={() => navigate('/warehouses')}>
+                  Browse All Warehouses
                 </Button>
-                <Button variant="outlineLight" onClick={() => { setSubmitted(false); }}>
-                  Register Another Facility
+                <Button variant="outlineLight" onClick={() => navigate('/')}>
+                  Go to Home
                 </Button>
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
-              {/* Facility Identity */}
-              <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B5E20] pb-2 border-b border-gray-100 mb-4 flex items-center gap-1.5">
-                  <Building2 className="w-4 h-4 text-[#66BB6A]" /> Facility Identity & Management
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormInput
-                    id="warehouseName"
-                    label="Warehouse / Godown Name"
-                    placeholder="e.g. Kisan Cold Storage & Dry Godown"
-                    value={formData.warehouseName}
-                    onChange={handleChange}
-                    error={errors.warehouseName}
-                    required
-                  />
-                  <FormInput
-                    id="organizationName"
-                    label="Operating Organization / Legal Entity"
-                    placeholder="e.g. Agrilogix Warehousing Pvt Ltd"
-                    value={formData.organizationName}
-                    onChange={handleChange}
-                    error={errors.organizationName}
-                    required
-                  />
-                  <FormInput
-                    id="email"
-                    type="email"
-                    label="Business Email"
-                    placeholder="manager@warehouse.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    error={errors.email}
-                    required
-                  />
-                  <FormInput
-                    id="phone"
-                    type="tel"
-                    label="Contact Phone"
-                    placeholder="9876543210"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    error={errors.phone}
-                    required
-                  />
-                  <FormInput
-                    id="password"
-                    type="password"
-                    label="Access Password"
-                    placeholder="Create a password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    error={errors.password}
-                    required
-                    helperText="Minimum 8 characters"
-                  />
-                  <FormInput
-                    id="confirmPassword"
-                    type="password"
-                    label="Confirm Password"
-                    placeholder="Re-enter password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    error={errors.confirmPassword}
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Physical Location */}
-              <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B5E20] pb-2 border-b border-gray-100 mb-4">
-                  Physical Location Coordinates
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="sm:col-span-3">
-                    <FormInput
-                      id="address"
-                      label="Facility Address"
-                      placeholder="Plot No., Industrial / Agro-Park, Village Road"
-                      value={formData.address}
-                      onChange={handleChange}
-                      error={errors.address}
-                      required
-                    />
-                  </div>
-                  <FormInput
-                    id="district"
-                    label="District"
-                    placeholder="e.g. Nashik"
-                    value={formData.district}
-                    onChange={handleChange}
-                    error={errors.district}
-                    required
-                  />
-                  <FormInput
-                    id="state"
-                    label="State"
-                    placeholder="e.g. Maharashtra"
-                    value={formData.state}
-                    onChange={handleChange}
-                    error={errors.state}
-                    required
-                  />
-                  <FormInput
-                    id="pincode"
-                    label="Postal Pincode"
-                    placeholder="422001"
-                    value={formData.pincode}
-                    onChange={handleChange}
-                    error={errors.pincode}
-                    required
-                  />
-                  <FormInput
-                    id="latitude"
-                    type="number"
-                    step="any"
-                    label="Latitude (Optional)"
-                    placeholder="e.g. 19.9975"
-                    value={formData.latitude}
-                    onChange={handleChange}
-                    helperText="For radius distance calculation"
-                  />
-                  <FormInput
-                    id="longitude"
-                    type="number"
-                    step="any"
-                    label="Longitude (Optional)"
-                    placeholder="e.g. 73.7898"
-                    value={formData.longitude}
-                    onChange={handleChange}
-                    helperText="Geospatial coordinates"
-                  />
-                </div>
-              </div>
-
-              {/* Capacity & Compatibility */}
-              <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B5E20] pb-2 border-b border-gray-100 mb-4">
-                  Storage Specifications & Commodity Scope
-                </h3>
-                <div className="space-y-4">
-                  <div className="sm:w-1/2">
-                    <FormInput
-                      id="storageCapacityMt"
-                      type="number"
-                      label="Total Storage Capacity (Metric Tonnes)"
-                      placeholder="e.g. 5000"
-                      value={formData.storageCapacityMt}
-                      onChange={handleChange}
-                      error={errors.storageCapacityMt}
-                      required
-                    />
-                  </div>
-
+            <div className="p-6 sm:p-8">
+              {/* ================= STEP 1: Facility Details, Capacity & Map ================= */}
+              {currentStep === 1 && (
+                <form onSubmit={handleStep1Submit} className="space-y-6">
+                  {/* Facility Identity */}
                   <div>
-                    <label className="block text-xs font-semibold text-[#1B5E20] mb-2 uppercase tracking-wider">
-                      Supported Commodity Categories <span className="text-red-500">*</span>
-                    </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                      {availableCategories.map((cat) => {
-                        const checked = formData.supportedCategories.includes(cat);
-                        return (
-                          <button
-                            type="button"
-                            key={cat}
-                            onClick={() => handleCategoryToggle(cat)}
-                            className={`p-3 rounded-xl border text-xs font-medium flex items-center justify-between text-left transition-all ${
-                              checked
-                                ? 'bg-[#E8F5E9] border-[#1B5E20] text-[#1B5E20] font-bold shadow-xs'
-                                : 'bg-white border-gray-200 text-gray-600 hover:border-[#66BB6A]'
-                            }`}
-                          >
-                            <span>{cat}</span>
-                            {checked && <Check className="w-3.5 h-3.5 text-[#1B5E20]" />}
-                          </button>
-                        );
-                      })}
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B5E20] pb-2 border-b border-[#E8F5E9] mb-4 flex items-center gap-1.5">
+                      <Building2 className="w-4 h-4 text-[#66BB6A]" /> Facility Identity & Ownership
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <FormInput
+                        id="warehouseName"
+                        label="Warehouse / Godown Name"
+                        placeholder="e.g. Kisan Agro Cold Storage & Godown"
+                        value={warehouseName}
+                        onChange={(e) => setWarehouseName(e.target.value)}
+                        required
+                      />
+                      <FormInput
+                        id="ownerName"
+                        label="Owner / Manager Full Name"
+                        placeholder="e.g. Ramesh Kumar"
+                        value={ownerName}
+                        onChange={(e) => setOwnerName(e.target.value)}
+                        required
+                      />
                     </div>
-                    {errors.supportedCategories && (
-                      <p className="mt-1 text-xs text-red-600 font-medium">{errors.supportedCategories}</p>
-                    )}
                   </div>
-                </div>
-              </div>
 
-              {/* Regulatory & WDRA / e-NWR Eligibility Section */}
-              <div className="bg-[#E8F5E9]/50 rounded-2xl p-5 border border-[#A5D6A7] space-y-4">
-                <div className="flex items-start gap-3">
-                  <input
-                    id="isWdraRegistered"
-                    name="isWdraRegistered"
-                    type="checkbox"
-                    checked={formData.isWdraRegistered}
-                    onChange={handleChange}
-                    className="mt-1 w-4 h-4 rounded text-[#1B5E20] focus:ring-[#66BB6A] border-[#A5D6A7]"
-                  />
+                  {/* Phone & Capacity */}
                   <div>
-                    <label htmlFor="isWdraRegistered" className="text-sm font-bold text-[#1B5E20] cursor-pointer">
-                      WDRA Registered Facility (e-NWR Eligible)
-                    </label>
-                    <p className="text-xs text-gray-600 mt-0.5">
-                      Check if your facility is accredited under the Warehousing Development and Regulatory Authority (WDRA). Note: Non-registered facilities operate as standard collection points and do NOT automatically issue e-NWRs.
-                    </p>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B5E20] pb-2 border-b border-[#E8F5E9] mb-4 flex items-center gap-1.5">
+                      <Scale className="w-4 h-4 text-[#66BB6A]" /> Contact & Storage Capacity
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <FormInput
+                        id="phone"
+                        label="Contact Phone Number"
+                        type="tel"
+                        placeholder="10-digit mobile number"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        required
+                      />
+                      <FormInput
+                        id="totalCapacityKg"
+                        label="Total Storage Capacity (in KG)"
+                        type="number"
+                        placeholder="e.g. 50000"
+                        value={totalCapacityKg}
+                        onChange={(e) => setTotalCapacityKg(e.target.value)}
+                        helper="Enter capacity in kilograms (e.g., 50 MT = 50,000 kg)"
+                        required
+                      />
+                    </div>
                   </div>
-                </div>
 
-                {formData.isWdraRegistered && (
-                  <div className="pt-2">
-                    <FormInput
-                      id="wdraRegNumber"
-                      label="WDRA Registration Certificate Number"
-                      placeholder="e.g. WDRA/REG/2026/8941"
-                      value={formData.wdraRegNumber}
-                      onChange={handleChange}
-                      error={errors.wdraRegNumber}
-                      required
+                  {/* Cold Storage & WDRA Specs */}
+                  <div className="space-y-4">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B5E20] pb-2 border-b border-[#E8F5E9] mb-3 flex items-center gap-1.5">
+                      <Snowflake className="w-4 h-4 text-[#66BB6A]" /> Facility Capabilities & Compliance
+                    </h3>
+
+                    {/* Cold Storage Toggle */}
+                    <div className="p-4 rounded-xl border border-[#A5D6A7] bg-[#E8F5E9]/40 flex items-center justify-between">
+                      <div className="space-y-0.5 pr-4">
+                        <label className="text-xs font-bold text-[#1B5E20] flex items-center gap-2 cursor-pointer">
+                          <Snowflake className="w-4 h-4 text-[#2E7D32]" /> Cold Storage Facility Available
+                        </label>
+                        <p className="text-[11px] text-gray-600">
+                          Equipped with climate control chambers suitable for perishables, fruits, and vegetables.
+                        </p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                        <input
+                          type="checkbox"
+                          checked={coldStorageAvailable}
+                          onChange={(e) => setColdStorageAvailable(e.target.checked)}
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1B5E20]"></div>
+                      </label>
+                    </div>
+
+                    {/* WDRA Accreditation */}
+                    <div className="p-4 rounded-xl border border-[#A5D6A7] bg-[#E8F5E9]/40 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5 pr-4">
+                          <label className="text-xs font-bold text-[#1B5E20] flex items-center gap-2 cursor-pointer">
+                            <Shield className="w-4 h-4 text-[#2E7D32]" /> WDRA Registered Warehouse
+                          </label>
+                          <p className="text-[11px] text-gray-600">
+                            Warehousing Development and Regulatory Authority accredited (e-NWR pledge eligible).
+                          </p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                          <input
+                            type="checkbox"
+                            checked={wdraRegistered}
+                            onChange={(e) => setWdraRegistered(e.target.checked)}
+                            className="sr-only peer"
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1B5E20]"></div>
+                        </label>
+                      </div>
+
+                      {wdraRegistered && (
+                        <div className="pt-2 animate-fadeIn">
+                          <FormInput
+                            id="wdraRegNumber"
+                            label="WDRA Registration Certificate Number"
+                            placeholder="e.g. WDRA/REG/2024/09812"
+                            value={wdraRegNumber}
+                            onChange={(e) => setWdraRegNumber(e.target.value)}
+                            required
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Location via Search / Interactive Map */}
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B5E20] pb-2 border-b border-[#E8F5E9] mb-4 flex items-center gap-1.5">
+                      <MapPin className="w-4 h-4 text-[#66BB6A]" /> Warehouse Location & Map Coordinates
+                    </h3>
+                    <LocationPicker
+                      title="Pinpoint Warehouse on Map"
+                      subtitle="Search by town/landmark, use your GPS location, or click anywhere on the map to position the facility"
+                      initialLat={locationData.latitude}
+                      initialLng={locationData.longitude}
+                      onLocationConfirm={(loc) => {
+                        setLocationData(loc);
+                      }}
                     />
                   </div>
-                )}
-              </div>
 
-              {/* Submit CTA */}
-              <div className="pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <p className="text-xs text-gray-500">
-                  Verification status will be confirmed after review.
-                </p>
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                  <Button
-                    variant="ghost"
-                    onClick={() => navigate('/register')}
-                    className="w-1/2 sm:w-auto"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="dark"
-                    loading={loading}
-                    className="w-1/2 sm:w-auto px-7"
-                  >
-                    Register Facility
-                  </Button>
+                  {/* Proceed Button */}
+                  <div className="pt-4 flex justify-end">
+                    <Button variant="primary" size="md" icon={ArrowRight} type="submit">
+                      Proceed to Email Verification
+                    </Button>
+                  </div>
+                </form>
+              )}
+
+              {/* ================= STEP 2: Email & OTP Verification ================= */}
+              {currentStep === 2 && (
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B5E20] pb-2 border-b border-[#E8F5E9] mb-4">
+                      Official Email & Identity Verification
+                    </h3>
+                    <p className="text-xs text-gray-600 mb-4">
+                      Enter the official email for warehouse communications. We will deliver a secure 6-digit one-time code to authenticate the facility record.
+                    </p>
+
+                    <div className="mb-4">
+                      <FormInput
+                        id="email"
+                        label="Official Email Address"
+                        type="email"
+                        placeholder="manager@warehouse.com"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          setEmailVerified(false);
+                        }}
+                        disabled={emailVerified}
+                        required
+                      />
+                    </div>
+
+                    <EmailOtpVerification
+                      email={email}
+                      onVerified={(verified) => {
+                        setEmailVerified(verified);
+                        setError(null);
+                      }}
+                    />
+                  </div>
+
+                  <div className="pt-4 flex justify-between items-center border-t border-gray-100">
+                    <Button
+                      variant="outlineLight"
+                      size="sm"
+                      onClick={() => setCurrentStep(1)}
+                    >
+                      ← Back to Facility Profile
+                    </Button>
+
+                    <Button
+                      variant="primary"
+                      size="md"
+                      icon={ArrowRight}
+                      disabled={!emailVerified}
+                      onClick={handleStep2Submit}
+                    >
+                      Proceed to Password Setup
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </form>
+              )}
+
+              {/* ================= STEP 3: Password Creation & Final Registration ================= */}
+              {currentStep === 3 && (
+                <form onSubmit={handleFinalSubmit} className="space-y-6">
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B5E20] pb-2 border-b border-[#E8F5E9] mb-4 flex items-center gap-1.5">
+                      <Lock className="w-4 h-4 text-[#66BB6A]" /> Create Account Password
+                    </h3>
+                    <p className="text-xs text-gray-600 mb-4">
+                      Create and re-enter a strong password to secure your warehouse manager portal.
+                    </p>
+
+                    <PasswordCreationInput
+                      password={password}
+                      setPassword={setPassword}
+                      confirmPassword={confirmPassword}
+                      setConfirmPassword={setConfirmPassword}
+                      onValidChange={(valid) => setIsPasswordValid(valid)}
+                    />
+                  </div>
+
+                  {/* Summary of what will be created */}
+                  <div className="p-4 rounded-xl bg-[#E8F5E9]/50 border border-[#A5D6A7] text-xs text-gray-700 space-y-1.5">
+                    <div className="font-bold text-[#1B5E20]">Facility Registration Summary:</div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px]">
+                      <div>• Warehouse: <strong>{warehouseName}</strong></div>
+                      <div>• Owner: <strong>{ownerName}</strong></div>
+                      <div>• Capacity: <strong>{Number(totalCapacityKg).toLocaleString()} kg</strong></div>
+                      <div>• Cold Storage: <strong>{coldStorageAvailable ? 'Yes' : 'No'}</strong></div>
+                      <div>• WDRA Status: <strong>{wdraRegistered ? `Registered (${wdraRegNumber})` : 'Standard'}</strong></div>
+                      <div>• Coordinates: <strong>{locationData.latitude.toFixed(4)}, {locationData.longitude.toFixed(4)}</strong></div>
+                      <div className="sm:col-span-2">• Email: <strong>{email}</strong></div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 flex justify-between items-center border-t border-gray-100">
+                    <Button
+                      variant="outlineLight"
+                      size="sm"
+                      onClick={() => setCurrentStep(2)}
+                      disabled={loading}
+                    >
+                      ← Back to OTP
+                    </Button>
+
+                    <Button
+                      variant="primary"
+                      size="md"
+                      icon={CheckCircle2}
+                      type="submit"
+                      loading={loading}
+                      disabled={!isPasswordValid || loading}
+                    >
+                      Create Warehouse Account
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </div>
           )}
         </div>
       </main>

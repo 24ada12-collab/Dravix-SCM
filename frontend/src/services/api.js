@@ -59,6 +59,16 @@ export const registerFarmerOrFpo = async (farmerData) => {
   return response.data;
 };
 
+export const registerWarehouse = async (warehouseData) => {
+  const response = await api.post('/auth/register/warehouse', warehouseData);
+  return response.data;
+};
+
+export const getWarehouseRecommendations = async (data) => {
+  const response = await api.post('/warehouses/recommendations', data);
+  return response.data;
+};
+
 export const loginUser = async (credentials) => {
   const response = await api.post('/auth/login', credentials);
   return response.data;

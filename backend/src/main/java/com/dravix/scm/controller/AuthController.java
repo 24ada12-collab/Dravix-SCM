@@ -61,6 +61,16 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/register/warehouse")
+    public ResponseEntity<?> registerWarehouse(@RequestBody com.dravix.scm.dto.WarehouseRegisterRequest request) {
+        try {
+            AuthResponse response = authService.registerWarehouse(request);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {

@@ -16,6 +16,7 @@ import DemandForecastPage from './pages/DemandForecastPage';
 import RolePlaceholderDashboard from './pages/RolePlaceholderDashboard';
 import WarehouseListingPage from './pages/WarehouseListingPage';
 import WarehouseDetailsPage from './pages/WarehouseDetailsPage';
+import SetupScreen from './pages/SetupScreen';
 
 function App() {
   return (
