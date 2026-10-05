@@ -7,7 +7,6 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import FarmerSidebar from "../components/FarmerSidebar";
 import Navbar from "../components/Navbar";
-import FuturisticDashboardWrapper from "../components/FuturisticDashboardWrapper";
 import {
   LineChart,
   Line,
@@ -765,7 +764,7 @@ export default function MarketForecast() {
   }, [allProducts, demandProducts, tableSearch, tableStatusFilter]);
 
   return (
-    <FuturisticDashboardWrapper>
+    <>
       <Navbar />
       <div className="layout">
         <FarmerSidebar />
@@ -2321,6 +2320,6 @@ export default function MarketForecast() {
 
         </PageShell>
       </div>
-    </FuturisticDashboardWrapper>
+    </>
   );
 }
