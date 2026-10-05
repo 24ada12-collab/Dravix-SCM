@@ -12,6 +12,7 @@ import LogisticsRegistration from './pages/LogisticsRegistration';
 import CustomerRegistration from './pages/CustomerRegistration';
 import VerificationStatusPage from './pages/VerificationStatusPage';
 import MarketForecastPage from './pages/MarketForecastPage';
+import MarketPriceExplorerPage from './pages/MarketPriceExplorerPage';
 import DemandForecastPage from './pages/DemandForecastPage';
 import RolePlaceholderDashboard from './pages/RolePlaceholderDashboard';
 import WarehouseListingPage from './pages/WarehouseListingPage';
@@ -53,6 +54,7 @@ function App() {
           {/* Verification & Access Gating */}
           <Route path="/verification" element={<VerificationStatusPage />} />
           <Route path="/market-forecast" element={<MarketForecastPage />} />
+          <Route path="/market-price-explorer" element={<MarketPriceExplorerPage />} />
           <Route path="/demand-forecast" element={<DemandForecastPage />} />
 
           {/* Farmer Workspace Routes */}

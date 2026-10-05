@@ -14,7 +14,8 @@ import {
   LogOut,
   Sprout,
   FileText,
-  UserCheck
+  UserCheck,
+  Search
 } from 'lucide-react';
 import { useAuth } from '../services/AuthContext';
 
@@ -59,6 +60,12 @@ const FarmerSidebar = () => {
           label: 'Market Price Forecast',
           icon: Sparkles,
           chip: 'AI'
+        },
+        {
+          to: '/market-price-explorer',
+          label: 'Market Price Explorer',
+          icon: Search,
+          chip: 'MANDI'
         },
         {
           to: '/demand-forecast',
