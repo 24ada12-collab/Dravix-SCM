@@ -23,11 +23,11 @@ public class AuthController {
             if (request.getEmail() == null || request.getEmail().isBlank()) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Email is required"));
             }
-            String otp = otpService.generateAndSendOtp(request.getEmail().trim());
+            otpService.generateAndSendOtp(request.getEmail().trim());
             return ResponseEntity.ok(Map.of(
-                    "message", "OTP sent successfully to " + request.getEmail().trim(),
+                    "message", "Verification code sent to your email.",
                     "status", "SENT",
-                    "devFallbackOtp", otp // Safe dev mode fallback clearly documented for local Buildathon
+                    "success", true
             ));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));

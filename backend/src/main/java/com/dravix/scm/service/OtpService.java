@@ -8,7 +8,10 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class OtpService {
+
+    private final EmailService emailService;
 
     // In-memory OTP storage for local development
     private static class OtpEntry {
@@ -29,7 +32,7 @@ public class OtpService {
     private static final long OTP_VALIDITY_MS = 5 * 60 * 1000; // 5 minutes
     private static final long RATE_LIMIT_COOLDOWN_MS = 30 * 1000; // 30 seconds cooldown between sends
 
-    public String generateAndSendOtp(String email) {
+    public void generateAndSendOtp(String email) {
         long now = System.currentTimeMillis();
 
         // Rate limiting check
@@ -44,18 +47,12 @@ public class OtpService {
         int code = 100000 + random.nextInt(900000);
         String otp = String.valueOf(code);
 
+        // Store OTP entry
         otpStore.put(email.toLowerCase(), new OtpEntry(otp, now + OTP_VALIDITY_MS));
         lastRequestedTime.put(email.toLowerCase(), now);
 
-        // In production/future, this integrates with MailSender.
-        // For local Buildathon development, we log it clearly to the console.
-        System.out.println("==================================================");
-        System.out.println("[DRAVIX SCM - OTP SERVICE] (Development Mode)");
-        System.out.println("Generated OTP for " + email + ": " + otp);
-        System.out.println("Expires in 5 minutes at: " + Instant.ofEpochMilli(now + OTP_VALIDITY_MS));
-        System.out.println("==================================================");
-
-        return otp;
+        // Send OTP via Gmail SMTP (throws meaningful error if delivery fails)
+        emailService.sendOtpEmail(email, otp);
     }
 
     public boolean verifyOtp(String email, String enteredOtp) {

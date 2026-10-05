@@ -9,7 +9,6 @@ const EmailOtpVerification = ({ email, onVerified }) => {
   const [isVerified, setIsVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [devFallbackCode, setDevFallbackCode] = useState(null);
   const [resendCooldown, setResendCooldown] = useState(0);
 
   const handleSendOtp = async () => {
@@ -20,11 +19,8 @@ const EmailOtpVerification = ({ email, onVerified }) => {
     setError(null);
     setLoading(true);
     try {
-      const data = await sendOtp(email);
+      await sendOtp(email);
       setOtpSent(true);
-      if (data.devFallbackOtp) {
-        setDevFallbackCode(data.devFallbackOtp);
-      }
       setResendCooldown(30);
       const interval = setInterval(() => {
         setResendCooldown((prev) => {
@@ -36,7 +32,12 @@ const EmailOtpVerification = ({ email, onVerified }) => {
         });
       }, 1000);
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Failed to send OTP');
+      const errMsg = err.response?.data?.message || err.message;
+      if (err.response?.status === 500 || (err.message && err.message.toLowerCase().includes('network error'))) {
+        setError('Unable to send verification email. Please check the email address and try again.');
+      } else {
+        setError(errMsg || 'Unable to send verification email. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -125,19 +126,9 @@ const EmailOtpVerification = ({ email, onVerified }) => {
                 </Button>
               </div>
 
-              {/* Explicit Local Development Mode Notice */}
-              {devFallbackCode && (
-                <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 text-xs text-amber-900 flex items-start gap-2">
-                  <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-bold uppercase tracking-wider text-[10px] bg-amber-200 px-1.5 py-0.5 rounded text-amber-900 mr-1.5">
-                      DEVELOPMENT MODE
-                    </span>
-                    <span>Local verification code for testing: </span>
-                    <strong className="font-mono text-sm tracking-wider text-amber-950 underline">{devFallbackCode}</strong>
-                  </div>
-                </div>
-              )}
+              <div className="text-xs text-[#1B5E20] font-medium bg-[#E8F5E9] px-3 py-2 rounded-lg border border-[#A5D6A7]">
+                Verification code sent to your email.
+              </div>
             </div>
           )}
 
