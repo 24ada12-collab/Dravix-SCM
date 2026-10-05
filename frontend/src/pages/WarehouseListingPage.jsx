@@ -18,10 +18,14 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Button from '../components/Button';
+import DashboardShell from '../components/DashboardShell';
+import { useAuth } from '../services/AuthContext';
 import { getWarehouses } from '../services/api';
 
 const WarehouseListingPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isFarmerUser = user && (user.role === 'FARMER' || user.role === 'FPO_MEMBER');
 
   // Filters state
   const [district, setDistrict] = useState('All');
@@ -96,41 +100,38 @@ const WarehouseListingPage = () => {
     return `${Number(kg).toLocaleString('en-IN')} kg`;
   };
 
-  return (
-    <div className="min-h-screen bg-[#E8F5E9]/40 flex flex-col font-sans">
-      <Navbar />
-
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] text-xs font-bold tracking-wide uppercase mb-2">
-                <Warehouse className="w-3.5 h-3.5" />
-                Agricultural Storage Infrastructure
-              </div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1B5E20] tracking-tight">
-                Warehouses
-              </h1>
-              <p className="mt-1 text-sm sm:text-base text-gray-600 max-w-2xl">
-                Browse verified storage facilities, government godowns, and cold storage units across districts to safeguard agricultural produce.
-              </p>
+  const content = (
+    <div className="w-full space-y-6">
+      {/* Header Section */}
+      <div className="mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold tracking-wide uppercase mb-2">
+              <Warehouse className="w-3.5 h-3.5" />
+              Agricultural Storage Infrastructure
             </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Warehouse Discovery & Allocation
+            </h1>
+            <p className="mt-1 text-xs sm:text-sm text-slate-500 max-w-2xl">
+              Official WDRA-registered facilities and government godowns available for agricultural deposit and e-NWR receipt generation.
+            </p>
+          </div>
 
-            <div className="flex items-center gap-2 self-start sm:self-center">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={fetchWarehouses}
-                disabled={loading}
-                className="text-xs font-semibold text-[#1B5E20] border-[#A5D6A7] hover:bg-[#E8F5E9]"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
-            </div>
+          <div className="flex items-center gap-2 self-start sm:self-center">
+            <Button
+              variant="outlineLight"
+              size="sm"
+              onClick={fetchWarehouses}
+              disabled={loading}
+              className="text-xs font-semibold"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
           </div>
         </div>
+      </div>
 
         {/* Filter Bar */}
         <div className="bg-white rounded-2xl border border-[#A5D6A7] shadow-sm p-4 sm:p-6 mb-8 transition-all">
@@ -390,8 +391,19 @@ const WarehouseListingPage = () => {
             </div>
           </div>
         )}
-      </main>
+      </div>
+  );
 
+  if (isFarmerUser) {
+    return <DashboardShell>{content}</DashboardShell>;
+  }
+
+  return (
+    <div className="min-h-screen bg-[#E8F5E9]/40 flex flex-col font-sans">
+      <Navbar />
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        {content}
+      </main>
       <Footer />
     </div>
   );

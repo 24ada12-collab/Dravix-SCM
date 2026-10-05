@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sprout, Menu, X, ArrowRight } from 'lucide-react';
 import Button from './Button';
+import { useAuth } from '../services/AuthContext';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const navLinks = [
@@ -52,21 +54,44 @@ const Navbar = () => {
 
           {/* Desktop Action Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/login')}
-            >
-              Sign In
-            </Button>
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={() => navigate('/register')}
-              icon={ArrowRight}
-            >
-              Get Started
-            </Button>
+            {user ? (
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate('/farmer/dashboard')}
+                  className="text-xs"
+                >
+                  Workspace Hub
+                </Button>
+                <div className="flex items-center gap-2 pl-2 border-l border-emerald-300">
+                  <div className="w-8 h-8 rounded-full bg-emerald-800 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                    {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                  </div>
+                  <span className="text-xs font-bold text-slate-800 truncate max-w-[120px]">
+                    {user.name || 'Producer'}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/login')}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  variant="dark"
+                  size="sm"
+                  onClick={() => navigate('/register')}
+                  icon={ArrowRight}
+                >
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Toggle Button */}
