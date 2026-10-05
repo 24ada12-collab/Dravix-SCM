@@ -402,12 +402,19 @@ const VerificationStatusPage = () => {
 
             <div className="flex justify-end gap-2 pt-2">
               <Button
-                variant="dark"
+                variant="outlineLight"
                 size="sm"
                 onClick={() => setGateCheckModal(null)}
               >
                 Close
               </Button>
+              {gateCheckModal.status === 'ALLOWED' && (
+                <Link to="/farmer/add-product">
+                  <Button variant="primary" size="sm" icon={PackagePlus}>
+                    Proceed to Add Product
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>

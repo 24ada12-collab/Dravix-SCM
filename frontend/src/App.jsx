@@ -16,6 +16,10 @@ import DemandForecastPage from './pages/DemandForecastPage';
 import RolePlaceholderDashboard from './pages/RolePlaceholderDashboard';
 import WarehouseListingPage from './pages/WarehouseListingPage';
 import WarehouseDetailsPage from './pages/WarehouseDetailsPage';
+import FarmerDashboard from './pages/FarmerDashboard';
+import FarmerAddProductPage from './pages/FarmerAddProductPage';
+import MyProductsPage from './pages/MyProductsPage';
+import FarmerInsurancePage from './pages/FarmerInsurancePage';
 import SetupScreen from './pages/SetupScreen';
 
 function App() {
@@ -51,7 +55,15 @@ function App() {
           <Route path="/market-forecast" element={<MarketForecastPage />} />
           <Route path="/demand-forecast" element={<DemandForecastPage />} />
 
-          {/* Role Placeholder Dashboards */}
+          {/* Farmer Workspace Routes */}
+          <Route path="/farmer/dashboard" element={<FarmerDashboard />} />
+          <Route path="/farmer/add-product" element={<FarmerAddProductPage />} />
+          <Route path="/farmer/my-products" element={<MyProductsPage />} />
+          <Route path="/farmer/insurance" element={<FarmerInsurancePage />} />
+
+          {/* Role Dashboards */}
+          <Route path="/dashboard/farmer" element={<FarmerDashboard />} />
+          <Route path="/dashboard/fpo_member" element={<FarmerDashboard />} />
           <Route path="/dashboard/:role" element={<RolePlaceholderDashboard />} />
 
           {/* Diagnostics / Setup */}

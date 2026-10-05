@@ -106,4 +106,30 @@ export const adminReviewStatus = async (userId, status, rejectionReason) => {
   return response.data;
 };
 
+// Farmer Module API calls
+export const addFarmerProduct = async (productData) => {
+  const response = await api.post('/farmer/products', productData);
+  return response.data;
+};
+
+export const getFarmerProducts = async () => {
+  const response = await api.get('/farmer/products');
+  return response.data;
+};
+
+export const getFarmerStats = async () => {
+  const response = await api.get('/farmer/stats');
+  return response.data;
+};
+
+export const submitInsuranceClaim = async (claimData) => {
+  const response = await api.post('/farmer/insurance-claims', claimData);
+  return response.data;
+};
+
+export const getFarmerClaims = async () => {
+  const response = await api.get('/farmer/insurance-claims');
+  return response.data;
+};
+
 export default api;
