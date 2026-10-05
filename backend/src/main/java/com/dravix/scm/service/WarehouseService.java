@@ -60,6 +60,12 @@ public class WarehouseService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public java.util.Optional<WarehouseResponse> getWarehouseById(Long id) {
+        return warehouseRepository.findByIdAndActiveTrue(id)
+                .map(this::mapToResponse);
+    }
+
     private WarehouseResponse mapToResponse(Warehouse warehouse) {
         return WarehouseResponse.builder()
                 .id(warehouse.getId())

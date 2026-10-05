@@ -52,4 +52,26 @@ public class WarehouseController {
         List<WarehouseResponse> warehouses = warehouseService.getWarehouses(district, parsedWarehouseType, parsedOwnershipType);
         return ResponseEntity.ok(warehouses);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getWarehouseById(@org.springframework.web.bind.annotation.PathVariable String id) {
+        Long warehouseId;
+        try {
+            warehouseId = Long.parseLong(id.trim());
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of(
+                    "status", 400,
+                    "error", "Bad Request",
+                    "message", "Invalid warehouse ID format: '" + id + "'. ID must be a numeric value."
+            ));
+        }
+
+        return warehouseService.getWarehouseById(warehouseId)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(org.springframework.http.HttpStatus.NOT_FOUND).body(java.util.Map.of(
+                        "status", 404,
+                        "error", "Warehouse not found",
+                        "message", "No active warehouse found with id: " + warehouseId
+                )));
+    }
 }
