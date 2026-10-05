@@ -17,6 +17,7 @@ import {
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Button from '../components/Button';
+import DashboardShell from '../components/DashboardShell';
 import { useAuth } from '../services/AuthContext';
 import {
   getVerificationStatus,
@@ -139,10 +140,11 @@ const VerificationStatusPage = () => {
   };
 
   return (
-    <div className="min-h-screen subtle-mesh flex flex-col font-sans">
-      <Navbar />
-
-      <main className="flex-1 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-6">
+    <DashboardShell
+      title="Producer Verification Center"
+      subtitle="Account identity records, statutory land certificates, and regulatory platform verification status"
+    >
+      <div className="space-y-6">
         {/* Verification Status Header Banner */}
         <div className="bg-white/95 backdrop-blur-md rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div>
@@ -379,7 +381,6 @@ const VerificationStatusPage = () => {
             </Button>
           </div>
         </div>
-      </main>
 
       {/* Product Access Gate Modal */}
       {gateCheckModal && (
@@ -426,9 +427,8 @@ const VerificationStatusPage = () => {
           </div>
         </div>
       )}
-
-      <Footer />
-    </div>
+      </div>
+    </DashboardShell>
   );
 };
 
