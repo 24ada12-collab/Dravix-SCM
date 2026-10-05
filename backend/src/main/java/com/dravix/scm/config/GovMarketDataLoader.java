@@ -20,6 +20,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.dravix.scm.entity.Role;
+import com.dravix.scm.entity.User;
+import com.dravix.scm.entity.VerificationStatus;
+import com.dravix.scm.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -27,6 +33,9 @@ public class GovMarketDataLoader implements CommandLineRunner {
 
     private final GovMarketObservationRepository observationRepository;
     private final ResourceLoader resourceLoader;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final com.dravix.scm.repository.WarehouseRepository warehouseRepository;
 
     private static final Pattern SQL_VALUE_ROW = Pattern.compile(
             "\\('([^']+)',\\s*'([^']*)',\\s*'([^']*)',\\s*'([^']*)',\\s*'([^']*)',\\s*([0-9.]+),\\s*([0-9.]+),\\s*([0-9.]+),\\s*([0-9.]+),\\s*'([0-9-]+)',\\s*'([^']*)'"
@@ -35,6 +44,74 @@ public class GovMarketDataLoader implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
+        // Ensure default system administrator exists
+        if (!userRepository.existsByEmail("admin@dravix.com")) {
+            User admin = User.builder()
+                    .name("System Administrator")
+                    .email("admin@dravix.com")
+                    .phone("9876543210")
+                    .passwordHash(passwordEncoder.encode("admin123"))
+                    .role(Role.ADMIN)
+                    .verificationStatus(VerificationStatus.VERIFIED)
+                    .emailVerified(true)
+                    .build();
+            userRepository.save(admin);
+            log.info("[GovMarketDataLoader] Created default admin account: admin@dravix.com / admin123");
+        }
+
+        // Auto-accept & seed 24ada12@karpagamtech.ac.in as requested by the user
+        String targetEmail = "24ada12@karpagamtech.ac.in";
+        User whUser = userRepository.findByEmail(targetEmail).orElse(null);
+        if (whUser == null) {
+            whUser = User.builder()
+                    .name("Karpagam Central Godown")
+                    .email(targetEmail)
+                    .phone("9876543211")
+                    .passwordHash(passwordEncoder.encode("password123"))
+                    .role(Role.WAREHOUSE)
+                    .verificationStatus(VerificationStatus.VERIFIED)
+                    .emailVerified(true)
+                    .build();
+            whUser = userRepository.save(whUser);
+            log.info("[GovMarketDataLoader] Created & Verified warehouse user: {}", targetEmail);
+        } else {
+            whUser.setVerificationStatus(VerificationStatus.VERIFIED);
+            whUser.setEmailVerified(true);
+            whUser.setRole(Role.WAREHOUSE);
+            whUser.setPasswordHash(passwordEncoder.encode("password123"));
+            userRepository.save(whUser);
+            log.info("[GovMarketDataLoader] Auto-verified & set password for user: {}", targetEmail);
+        }
+
+        // Ensure associated warehouse exists and is verified
+        String sourceRef = "USER_REGISTRATION:" + whUser.getId();
+        boolean whExists = warehouseRepository.findAll().stream()
+                .anyMatch(w -> sourceRef.equals(w.getSourceReference()) || "Karpagam Central Godown".equalsIgnoreCase(w.getName()));
+        if (!whExists) {
+            com.dravix.scm.entity.Warehouse wh = com.dravix.scm.entity.Warehouse.builder()
+                    .name("Karpagam Central Godown")
+                    .warehouseType(com.dravix.scm.entity.WarehouseType.GODOWN)
+                    .ownershipType(com.dravix.scm.entity.OwnershipType.PRIVATE)
+                    .sourceType(com.dravix.scm.entity.SourceType.PRIVATE_ADMIN_VERIFIED)
+                    .district("Coimbatore")
+                    .location("Eachanari, Pollachi Main Rd")
+                    .address("Karpagam Tech Agro Hub, Coimbatore, Tamil Nadu")
+                    .latitude(10.9248)
+                    .longitude(76.9926)
+                    .totalCapacityKg(500000.0)
+                    .availableCapacityKg(500000.0)
+                    .storageType("GENERAL_DRY")
+                    .supportedCategories("Grains,Cereals,Pulses,Oilseeds,Spices")
+                    .wdraRegistered(true)
+                    .eNwrEligible(true)
+                    .verified(true)
+                    .active(true)
+                    .sourceReference(sourceRef)
+                    .build();
+            warehouseRepository.save(wh);
+            log.info("[GovMarketDataLoader] Seeded and verified Warehouse for {}", targetEmail);
+        }
+
         long count = observationRepository.count();
         if (count > 0) {
             log.info("[GovMarketDataLoader] {} market observations already exist. Skipping seed.", count);

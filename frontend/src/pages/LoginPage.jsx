@@ -35,6 +35,13 @@ const LoginPage = () => {
       const role = response.role;
       if (role === 'FARMER' || role === 'FPO_MEMBER') {
         navigate('/farmer/dashboard');
+      } else if (role === 'WAREHOUSE' || role === 'WAREHOUSE_MANAGER') {
+        localStorage.setItem('username', response.email);
+        localStorage.setItem('role', role);
+        localStorage.setItem('warehouseId', '1');
+        navigate('/warehouse');
+      } else if (role === 'ADMIN') {
+        navigate('/admin');
       } else {
         navigate('/dashboard/' + role.toLowerCase());
       }
@@ -114,11 +121,35 @@ const LoginPage = () => {
             </Button>
 
             {/* Quick Demo Credentials helper */}
-            <div className="p-3 rounded-xl bg-[#E8F5E9]/50 border border-[#A5D6A7] text-[11px] text-gray-600">
-              <span className="font-bold text-[#1B5E20] block mb-1">
-                Notice:
+            <div className="p-3.5 rounded-xl bg-[#E8F5E9] border border-[#A5D6A7] text-xs text-gray-700 space-y-2">
+              <span className="font-bold text-[#1B5E20] block">
+                Quick Demo Accounts (Click to Fill):
               </span>
-              <span>New Farmer/FPO users can sign in immediately after registration to view their verification status and submit documents.</span>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail('admin@dravix.com');
+                    setPassword('admin123');
+                  }}
+                  className="px-2.5 py-1.5 rounded-md bg-[#1B5E20] text-white text-[11px] font-bold hover:bg-[#144618] transition-colors shadow-xs"
+                >
+                  Admin (admin@dravix.com / admin123)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail('24ada12@karpagamtech.ac.in');
+                    setPassword('password123');
+                  }}
+                  className="px-2.5 py-1.5 rounded-md bg-[#2e7d32] text-white text-[11px] font-bold hover:bg-[#1b5e20] transition-colors shadow-xs"
+                >
+                  Warehouse (24ada12@karpagamtech.ac.in / password123)
+                </button>
+              </div>
+              <p className="text-[11px] text-gray-500">
+                Admin has verified this warehouse. Click either account above to immediately test and access the portals.
+              </p>
             </div>
 
             <div className="pt-3 border-t border-gray-100 text-center text-xs text-gray-600">

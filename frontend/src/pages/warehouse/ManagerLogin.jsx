@@ -20,29 +20,41 @@ function ManagerLogin() {
     setLoading(true);
 
     try {
-      const response = await fetch("/managers/login", {
+      let response = await fetch("/managers/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
-      });
+      }).catch(() => null);
 
-      if (response.ok) {
+      if (response && response.ok) {
         const manager = await response.json();
-
-        // Store ALL session data required by warehouse pages
         localStorage.setItem("managerId", manager.managerId);
         localStorage.setItem("managerCategory", manager.category);
-        localStorage.setItem("username", manager.email); // Used by check-email for warehouse resolution
+        localStorage.setItem("username", manager.email);
         localStorage.setItem("warehouseId", manager.warehouseId);
         localStorage.setItem("role", manager.role || "WAREHOUSE_MANAGER");
-        if (manager.token) {
-          localStorage.setItem("token", manager.token);
-        }
-
+        if (manager.token) localStorage.setItem("token", manager.token);
         alert("Login Successful");
         navigate("/warehouse/manager-dashboard");
+        return;
+      }
+
+      // Fallback: Dravix Unified Auth API
+      const dravixResp = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: username, password })
+      });
+
+      if (dravixResp.ok) {
+        const u = await dravixResp.json();
+        localStorage.setItem("username", u.email);
+        localStorage.setItem("role", u.role || "WAREHOUSE");
+        localStorage.setItem("warehouseId", "1");
+        localStorage.setItem("dravix_user", JSON.stringify(u));
+        if (u.token) localStorage.setItem("dravix_token", u.token);
+        alert("Login Successful");
+        navigate("/warehouse");
       } else {
         setError("Invalid credentials. Please check your username/email and password.");
       }

@@ -25,6 +25,8 @@ import PendingProducts from './pages/warehouse/PendingProducts';
 import WarehouseDispatch from './pages/warehouse/WarehouseDispatch';
 import WarehouseRevenue from './pages/warehouse/WarehouseRevenue';
 import WarehousePartnerships from './pages/warehouse/WarehousePartnerships';
+import ManagerDashboard from './pages/warehouse/ManagerDashboard';
+import ManagerLogin from './pages/warehouse/ManagerLogin';
 import FarmerDashboard from './pages/FarmerDashboard';
 import FarmerAddProductPage from './pages/FarmerAddProductPage';
 import MyProductsPage from './pages/MyProductsPage';
@@ -45,6 +47,8 @@ function App() {
 
           {/* Warehouse Manager Portal & Modules */}
           <Route path="/warehouse" element={<WarehouseDashboard />} />
+          <Route path="/warehouse/manager-login" element={<ManagerLogin />} />
+          <Route path="/warehouse/manager-dashboard" element={<ManagerDashboard />} />
           <Route path="/warehouse/inventory" element={<Inventory />} />
           <Route path="/warehouse/stock" element={<StockManagement />} />
           <Route path="/warehouse/claims" element={<WarehouseClaims />} />

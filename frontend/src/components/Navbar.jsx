@@ -6,7 +6,7 @@ import { useAuth } from '../services/AuthContext';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const navLinks = [
@@ -55,23 +55,42 @@ const Navbar = () => {
           {/* Desktop Action Buttons */}
           <div className="hidden md:flex items-center gap-3">
             {user ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => navigate('/farmer/dashboard')}
+                  onClick={() => {
+                    if (user.role === 'ADMIN') {
+                      navigate('/admin');
+                    } else if (user.role === 'WAREHOUSE_MANAGER') {
+                      navigate('/warehouse/dashboard');
+                    } else {
+                      navigate('/farmer/dashboard');
+                    }
+                  }}
                   className="text-xs"
                 >
-                  Workspace Hub
+                  {user.role === 'ADMIN' ? 'Admin Panel' : 'Workspace Hub'}
                 </Button>
-                <div className="flex items-center gap-2 pl-2 border-l border-emerald-300">
-                  <div className="w-8 h-8 rounded-full bg-emerald-800 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                <div className="flex items-center gap-2 px-2 py-1 bg-white/70 rounded-lg border border-emerald-300">
+                  <div className="w-7 h-7 rounded-full bg-emerald-800 text-white font-bold text-xs flex items-center justify-center shadow-xs">
                     {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                   </div>
-                  <span className="text-xs font-bold text-slate-800 truncate max-w-[120px]">
-                    {user.name || 'Producer'}
+                  <span className="text-xs font-bold text-slate-800 truncate max-w-[100px]">
+                    {user.name || user.role}
                   </span>
                 </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    logout();
+                    navigate('/login');
+                  }}
+                  className="text-xs text-red-700 hover:text-red-900 hover:bg-red-50"
+                >
+                  Sign Out / Switch
+                </Button>
               </div>
             ) : (
               <>
