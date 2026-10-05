@@ -15,6 +15,7 @@ import {
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Button from '../components/Button';
+import DashboardShell from '../components/DashboardShell';
 import { getFarmerProducts } from '../services/api';
 
 const MyProductsPage = () => {
@@ -47,37 +48,21 @@ const MyProductsPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#E8F5E9] flex flex-col font-sans">
-      <Navbar />
-
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-6">
-        {/* Navigation & Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <button
-              onClick={() => navigate('/farmer/dashboard')}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1B5E20] hover:underline mb-2 cursor-pointer"
-            >
-              <ArrowLeft className="w-4 h-4" /> Back to Farmer Dashboard
-            </button>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1B5E20]">
-              My Products Catalog
-            </h1>
-            <p className="text-xs sm:text-sm text-gray-600">
-              Active agricultural commodities deposited and stored in verified warehouses.
-            </p>
-          </div>
-
-          <Button
-            variant="primary"
-            size="md"
-            icon={Plus}
-            onClick={() => navigate('/farmer/add-product')}
-          >
-            Add New Product
-          </Button>
-        </div>
-
+    <DashboardShell
+      title="My Agricultural Produce"
+      subtitle="Manage registered commodities, batch volume, and assigned storage facilities"
+      action={
+        <Button
+          variant="primary"
+          size="sm"
+          icon={Plus}
+          onClick={() => navigate('/farmer/add-product')}
+        >
+          Add New Product
+        </Button>
+      }
+    >
+      <div className="space-y-6">
         {/* Filter / Search Bar */}
         <div className="bg-white rounded-2xl p-4 border border-[#A5D6A7] shadow-sm flex flex-col sm:flex-row gap-3 items-center justify-between">
           <div className="relative w-full sm:w-80">
@@ -207,10 +192,8 @@ const MyProductsPage = () => {
             ))}
           </div>
         )}
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </DashboardShell>
   );
 };
 

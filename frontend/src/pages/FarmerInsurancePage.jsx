@@ -17,6 +17,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
+import DashboardShell from '../components/DashboardShell';
 import { getFarmerClaims, submitInsuranceClaim, getFarmerProducts } from '../services/api';
 
 const FarmerInsurancePage = () => {
@@ -102,40 +103,25 @@ const FarmerInsurancePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#E8F5E9] flex flex-col font-sans">
-      <Navbar />
-
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-6">
-        {/* Navigation & Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <button
-              onClick={() => navigate('/farmer/dashboard')}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1B5E20] hover:underline mb-2 cursor-pointer"
-            >
-              <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-            </button>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1B5E20]">
-              Agricultural Crop Insurance & Claims
-            </h1>
-            <p className="text-xs sm:text-sm text-gray-600">
-              Submit loss reimbursement claims for weather anomalies, pest outbreaks, or warehouse damages.
-            </p>
-          </div>
-
-          <Button
-            variant="primary"
-            size="md"
-            icon={Plus}
-            onClick={() => {
-              setError(null);
-              setSuccess(null);
-              setShowClaimModal(true);
-            }}
-          >
-            File New Claim
-          </Button>
-        </div>
+    <DashboardShell
+      title="Agricultural Crop Insurance & Claims"
+      subtitle="Submit loss reimbursement claims for weather anomalies, pest outbreaks, or warehouse damages"
+      action={
+        <Button
+          variant="primary"
+          size="sm"
+          icon={Plus}
+          onClick={() => {
+            setError(null);
+            setSuccess(null);
+            setShowClaimModal(true);
+          }}
+        >
+          File New Claim
+        </Button>
+      }
+    >
+      <div className="space-y-6">
 
         {success && (
           <div className="p-4 rounded-2xl bg-green-50 border border-green-200 text-xs text-green-800 flex items-center gap-2">
@@ -358,10 +344,8 @@ const FarmerInsurancePage = () => {
             </div>
           </div>
         )}
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </DashboardShell>
   );
 };
 

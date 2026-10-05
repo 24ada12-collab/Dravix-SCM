@@ -19,6 +19,7 @@ import {
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Button from '../components/Button';
+import DashboardShell from '../components/DashboardShell';
 import { useAuth } from '../services/AuthContext';
 import { getFarmerStats, getFarmerProducts, getVerificationStatus } from '../services/api';
 
@@ -84,7 +85,7 @@ const FarmerDashboard = () => {
       desc: 'Track warehouse inventory and listings',
       icon: Package,
       path: '/farmer/my-products',
-      color: 'bg-[#1B5E20]',
+      color: 'bg-emerald-700',
     },
     {
       title: 'Market Forecast Projections',
@@ -103,50 +104,48 @@ const FarmerDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#E8F5E9] flex flex-col font-sans">
-      <Navbar />
-
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-6">
+    <DashboardShell>
+      <div className="space-y-6">
         {/* Welcome Header */}
-        <div className="bg-gradient-to-r from-[#1B5E20] via-[#2E7D32] to-[#1B5E20] text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
-          <div className="absolute right-0 top-0 translate-x-10 -translate-y-10 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="bg-gradient-to-r from-emerald-900 via-slate-900 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-500/20 relative overflow-hidden">
+        <div className="absolute right-0 top-0 translate-x-10 -translate-y-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-0.5 rounded-full bg-white/20 text-[#A5D6A7] text-xs font-bold uppercase tracking-wider">
-                  Agricultural Producer Workspace
-                </span>
-                <span
-                  className={`px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${
-                    isVerified
-                      ? 'bg-emerald-400 text-[#1B5E20]'
-                      : 'bg-amber-300 text-amber-900'
-                  }`}
-                >
-                  {isVerified ? 'Verified Producer ✓' : 'Verification In Review'}
-                </span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                Welcome back, {user?.name || 'Farmer'}
-              </h1>
-              <p className="text-xs sm:text-sm text-[#A5D6A7] max-w-xl">
-                Manage your agricultural harvest, secure local warehouse storage, and access market projections.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Button
-                variant="light"
-                size="md"
-                icon={Plus}
-                onClick={() => navigate('/farmer/add-product')}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-0.5 rounded-full bg-white/10 text-emerald-300 text-xs font-bold uppercase tracking-wider border border-emerald-400/20">
+                Producer Workspace
+              </span>
+              <span
+                className={`px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${
+                  isVerified
+                    ? 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/30'
+                    : 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+                }`}
               >
-                Add Product
-              </Button>
+                {isVerified ? 'Verified Producer ✓' : 'Verification In Review'}
+              </span>
             </div>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+              Welcome back, {user?.name || 'Producer'}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-300 max-w-xl">
+              Manage agricultural harvest, allocate electronic warehouse receipts (e-NWR), and inspect AI market demand.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Button
+              variant="primary"
+              size="md"
+              icon={Plus}
+              onClick={() => navigate('/farmer/add-product')}
+            >
+              Add Product
+            </Button>
           </div>
         </div>
+      </div>
 
         {/* Verification Alert Banner if pending */}
         {!isVerified && (
@@ -343,10 +342,8 @@ const FarmerDashboard = () => {
             </div>
           )}
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </DashboardShell>
   );
 };
 

@@ -34,7 +34,7 @@ const LoginPage = () => {
       // Route the user according to their role
       const role = response.role;
       if (role === 'FARMER' || role === 'FPO_MEMBER') {
-        navigate('/verification');
+        navigate('/farmer/dashboard');
       } else {
         navigate('/dashboard/' + role.toLowerCase());
       }

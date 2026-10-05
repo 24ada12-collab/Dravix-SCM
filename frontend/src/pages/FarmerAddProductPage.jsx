@@ -21,6 +21,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
+import DashboardShell from '../components/DashboardShell';
 import { useAuth } from '../services/AuthContext';
 import {
   getWarehouseRecommendations,
@@ -190,19 +191,11 @@ const FarmerAddProductPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#E8F5E9] flex flex-col font-sans">
-      <Navbar />
-
-      <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-6">
-        {/* Navigation */}
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => navigate('/farmer/dashboard')}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1B5E20] hover:underline cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-          </button>
-        </div>
+    <DashboardShell
+      title="Add Agricultural Produce"
+      subtitle="Onboard harvested crops, compute pricing margins, and match nearest WDRA-certified warehouses"
+    >
+      <div className="max-w-4xl mx-auto space-y-6">
 
         {submitSuccess ? (
           <div className="bg-white rounded-3xl p-8 sm:p-12 border border-[#A5D6A7] shadow-xl text-center space-y-5">
@@ -565,10 +558,8 @@ const FarmerAddProductPage = () => {
             </div>
           </form>
         )}
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </DashboardShell>
   );
 };
 
