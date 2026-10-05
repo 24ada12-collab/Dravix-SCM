@@ -40,6 +40,7 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/api/health").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/warehouses/**").permitAll()
                         .requestMatchers("/api/verification/admin/**").permitAll()
                         // Secured endpoints will check roles / verification status
                         .requestMatchers("/api/products/gate-check").authenticated()

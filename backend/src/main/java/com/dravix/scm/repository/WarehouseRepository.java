@@ -14,6 +14,7 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long>, Jpa
     List<Warehouse> findByDistrictIgnoreCase(String district);
     List<Warehouse> findByWarehouseType(WarehouseType warehouseType);
     List<Warehouse> findByOwnershipType(OwnershipType ownershipType);
+    List<Warehouse> findByActiveTrueOrderByDistrictAscNameAsc();
     boolean existsByNameAndDistrict(String name, String district);
     boolean existsBySourceTypeAndDistrictAndLocationAndName(
             com.dravix.scm.entity.SourceType sourceType,
