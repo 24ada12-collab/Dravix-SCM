@@ -74,4 +74,25 @@ public class WarehouseController {
                         "message", "No active warehouse found with id: " + warehouseId
                 )));
     }
+
+    @org.springframework.web.bind.annotation.PostMapping("/recommendations")
+    public ResponseEntity<?> getNearestRecommendations(
+            @jakarta.validation.Valid @org.springframework.web.bind.annotation.RequestBody com.dravix.scm.dto.WarehouseRecommendationRequest request,
+            org.springframework.validation.BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldErrors().stream()
+                    .map(org.springframework.validation.FieldError::getDefaultMessage)
+                    .collect(java.util.stream.Collectors.joining("; "));
+            return ResponseEntity.badRequest().body(java.util.Map.of(
+                    "status", 400,
+                    "error", "Bad Request",
+                    "message", errorMessage
+            ));
+        }
+
+        List<com.dravix.scm.dto.WarehouseRecommendationResponse> recommendations =
+                warehouseService.getNearestRecommendations(request);
+        return ResponseEntity.ok(recommendations);
+    }
 }
