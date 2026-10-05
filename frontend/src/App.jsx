@@ -14,7 +14,7 @@ import VerificationStatusPage from './pages/VerificationStatusPage';
 import MarketForecastPage from './pages/MarketForecastPage';
 import DemandForecastPage from './pages/DemandForecastPage';
 import RolePlaceholderDashboard from './pages/RolePlaceholderDashboard';
-import SetupScreen from './pages/SetupScreen';
+import WarehouseListingPage from './pages/WarehouseListingPage';
 
 function App() {
   return (
@@ -23,6 +23,9 @@ function App() {
         <Routes>
           {/* Landing Page */}
           <Route path="/" element={<LandingPage />} />
+
+          {/* Warehouses Discovery */}
+          <Route path="/warehouses" element={<WarehouseListingPage />} />
 
           {/* Authentication */}
           <Route path="/login" element={<LoginPage />} />

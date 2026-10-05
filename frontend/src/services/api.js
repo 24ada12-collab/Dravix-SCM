@@ -22,6 +22,22 @@ export const checkHealth = async () => {
   return response.data;
 };
 
+// Warehouse API calls
+export const getWarehouses = async (filters = {}) => {
+  const params = {};
+  if (filters.district && filters.district !== 'All') {
+    params.district = filters.district.trim();
+  }
+  if (filters.warehouseType && filters.warehouseType !== 'All') {
+    params.warehouseType = filters.warehouseType.trim();
+  }
+  if (filters.ownershipType && filters.ownershipType !== 'All') {
+    params.ownershipType = filters.ownershipType.trim();
+  }
+  const response = await api.get('/warehouses', { params });
+  return response.data;
+};
+
 // Auth API calls
 export const sendOtp = async (email) => {
   const response = await api.post('/auth/send-otp', { email });
